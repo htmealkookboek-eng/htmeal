@@ -1,0 +1,41 @@
+{
+  "Tim": {
+    "password": "1d6f5dde4ba6bfa85c19bc8705dfc74ae4f181d357d72be7bae34b8c32dce7c8",
+    "created": "2026-07-09T19:30:14.031324",
+    "achievements": {
+      "favorite_lover": {
+        "earned_at": "2026-07-10T13:36:02.315837"
+      },
+      "favorite_collector": {
+        "earned_at": "2026-07-10T13:37:12.360505"
+      },
+      "first_recipe": {
+        "earned_at": "2026-07-10T13:52:49.775815"
+      }
+    },
+    "stats": {
+      "recipes_created": 1,
+      "favorites_count": 20,
+      "collections_count": 0,
+      "cooking_sessions": 0,
+      "notes_count": 0
+    }
+  },
+  "Tim en Stella": {
+    "password": "5602c670cd35ad042efaab66ee1050fce53b87bba78515fb499f2e07e02149d6",
+    "created": "2026-07-10T17:23:14.747517",
+    "session_token": "6c06b19e681247bc83ebc5d33599e0d2",
+    "achievements": {
+      "account_created": {
+        "earned_at": "2026-07-10T17:23:14.747517"
+      }
+    },
+    "stats": {
+      "recipes_created": 0,
+      "favorites_count": 1,
+      "collections_count": 0,
+      "cooking_sessions": 0,
+      "notes_count": 0
+    }
+  }
+}
