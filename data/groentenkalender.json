@@ -1,0 +1,2769 @@
+{
+  "country": "Nederland",
+  "vegetableImages": {
+    "aardpeer": "assets/img/aardpeer.webp",
+    "andijvie": "assets/img/andijvie.webp",
+    "asperge": [
+      "assets/img/asperge.webp",
+      "assets/img/groene asperge 2.webp",
+      "assets/img/groene asperge 3.webp",
+      "assets/img/groene asperge.webp"
+    ],
+    "aubergine": "assets/img/aubergine.webp",
+    "bloemkool": "assets/img/Bloemkool.webp",
+    "boerenkool": [
+      "assets/img/boerenkool 2.webp",
+      "assets/img/boerenkool 3.webp",
+      "assets/img/Boerenkool.webp"
+    ],
+    "bosui": [
+      "assets/img/bosui 2.webp",
+      "assets/img/bosui 3.webp",
+      "assets/img/bosui 4.webp",
+      "assets/img/bosui.webp",
+      "assets/img/ui.webp"
+    ],
+    "broccoli": "assets/img/broccoli.webp",
+    "chioggia biet": [
+      "assets/img/chioggia biet 2.webp",
+      "assets/img/chioggia biet.webp"
+    ],
+    "courgette": [
+      "assets/img/courgette 2.webp",
+      "assets/img/courgette.webp"
+    ],
+    "doperwten": [
+      "assets/img/doperwten 2.webp",
+      "assets/img/doperwten.webp"
+    ],
+    "groene asperge": [
+      "assets/img/asperge.webp",
+      "assets/img/groene asperge 2.webp",
+      "assets/img/groene asperge 3.webp",
+      "assets/img/groene asperge.webp"
+    ],
+    "knolselderij": "assets/img/knolselderij.webp",
+    "komkommer": [
+      "assets/img/komkommer 2.webp",
+      "assets/img/komkommer.webp"
+    ],
+    "koolrabi": "assets/img/Koolrabi.webp",
+    "mais": [
+      "assets/img/mais 2.webp",
+      "assets/img/mais 3.webp",
+      "assets/img/mais 4.webp",
+      "assets/img/mais 5.webp",
+      "assets/img/mais.webp"
+    ],
+    "paksoi": [
+      "assets/img/paksoi 2.webp",
+      "assets/img/paksoi 3.webp",
+      "assets/img/paksoi.webp"
+    ],
+    "paprika": [
+      "assets/img/paprika 2.webp",
+      "assets/img/paprika 3.webp",
+      "assets/img/paprika 4.webp",
+      "assets/img/paprika.webp"
+    ],
+    "pastinaak": "assets/img/pastinaak.webp",
+    "peultjes": [
+      "assets/img/peultjes 2.webp",
+      "assets/img/peultjes 3.webp",
+      "assets/img/peultjes 4.webp",
+      "assets/img/peultjes.webp"
+    ],
+    "pompoen": [
+      "assets/img/pompoen 2.webp",
+      "assets/img/pompoen.webp"
+    ],
+    "postelein": [
+      "assets/img/postelein.webp",
+      "assets/img/winterpostelein.webp"
+    ],
+    "prei": [
+      "assets/img/prei 2.webp",
+      "assets/img/prei.webp"
+    ],
+    "raapstelen": "assets/img/raapstelen.webp",
+    "rabarber": [
+      "assets/img/rabarber 2.webp",
+      "assets/img/rabarber 3.webp",
+      "assets/img/rabarber 4.webp",
+      "assets/img/rabarber 5.webp",
+      "assets/img/rabarber.webp"
+    ],
+    "radijs": [
+      "assets/img/radijs 2.webp",
+      "assets/img/radijs.webp"
+    ],
+    "schorseneer": "assets/img/snijbiet.webp",
+    "rode biet": "assets/img/rode biet.webp",
+    "rode kool": [
+      "assets/img/rode kool 2.webp",
+      "assets/img/rode kool 3.webp",
+      "assets/img/rode kool.webp"
+    ],
+    "rode ui": [
+      "assets/img/rode ui 2.webp",
+      "assets/img/rode ui 3.webp",
+      "assets/img/rode ui.webp",
+      "assets/img/ui.webp"
+    ],
+    "rucola": "assets/img/rucola.webp",
+    "savooiekool": [
+      "assets/img/savooiekool 2.webp",
+      "assets/img/savooiekool 3.webp",
+      "assets/img/savooiekool.webp"
+    ],
+    "sla": [
+      "assets/img/sla 2.webp",
+      "assets/img/sla 3.webp",
+      "assets/img/sla.webp",
+      "assets/img/veldsla 2.webp",
+      "assets/img/veldsla.webp"
+    ],
+    "bospeen": "assets/img/wortel.webp",
+    "snijbiet": [
+      "assets/img/snijbiet 2.webp",
+      "assets/img/snijbiet 3.webp",
+      "assets/img/snijbiet.webp"
+    ],
+    "sperzieboon": "assets/img/sperzieboon.webp",
+    "snijboon": "assets/img/snijbonen.webp",
+    "maïs": "assets/img/mais.webp",
+    "spinazie": [
+      "assets/img/spinazie 2.webp",
+      "assets/img/spinazie.webp"
+    ],
+    "spruiten": [
+      "assets/img/spruiten 2.webp",
+      "assets/img/spruiten 3.webp",
+      "assets/img/spruiten.webp",
+      "assets/img/ui.webp"
+    ],
+    "tomaat": [
+      "assets/img/tomaat 2.webp",
+      "assets/img/tomaat 3.webp",
+      "assets/img/tomaat 4.webp",
+      "assets/img/tomaat 5.webp",
+      "assets/img/tomaat 6.webp",
+      "assets/img/tomaat.webp"
+    ],
+    "tuinbonen": [
+      "assets/img/tuinbonen.webp",
+      "assets/img/ui.webp"
+    ],
+    "ui": [
+      "assets/img/bosui 2.webp",
+      "assets/img/bosui 3.webp",
+      "assets/img/bosui 4.webp",
+      "assets/img/bosui.webp",
+      "assets/img/rode ui 2.webp",
+      "assets/img/rode ui 3.webp",
+      "assets/img/rode ui.webp",
+      "assets/img/spruiten 2.webp",
+      "assets/img/spruiten 3.webp",
+      "assets/img/spruiten.webp",
+      "assets/img/tuinbonen.webp",
+      "assets/img/ui 2.webp",
+      "assets/img/ui 3.webp",
+      "assets/img/ui.webp"
+    ],
+    "veldsla": [
+      "assets/img/sla.webp",
+      "assets/img/veldsla 2.webp",
+      "assets/img/veldsla.webp"
+    ],
+    "venkel": [
+      "assets/img/venkel 2.webp",
+      "assets/img/venkel.webp"
+    ],
+    "waterkers": [
+      "assets/img/waterkers 2.webp",
+      "assets/img/waterkers 3.webp",
+      "assets/img/waterkers.webp"
+    ],
+    "winterpostelein": [
+      "assets/img/postelein.webp",
+      "assets/img/winterpostelein.webp"
+    ],
+    "winterwortel": [
+      "assets/img/winterwortel 2.webp",
+      "assets/img/winterwortel.webp",
+      "assets/img/wortel.webp"
+    ],
+    "witlof": [
+      "assets/img/witlof 2.webp",
+      "assets/img/witlof 3.webp",
+      "assets/img/witlof.webp"
+    ],
+    "witte kool": "assets/img/witte kool.webp",
+    "wortel": [
+      "assets/img/winterwortel 2.webp",
+      "assets/img/winterwortel.webp",
+      "assets/img/wortel 2.webp",
+      "assets/img/wortel.webp"
+    ],
+    "zoete aardappel": [
+      "assets/img/zoete aardappel 2.webp",
+      "assets/img/zoete aardappel.webp"
+    ]
+  },
+  "calendar": [
+    {
+      "week": 1,
+      "month": "januari",
+      "featured": "boerenkool",
+      "vegetables": [
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "rode kool",
+          "category": "koolgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "witte kool",
+          "category": "koolgroente",
+          "season_score": 85,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "winterwortel",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 85,
+          "status": "bewaarseizoen"
+        }
+      ]
+    },
+    {
+      "week": 2,
+      "month": "januari",
+      "featured": "spruiten",
+      "vegetables": [
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "schorseneer",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "aardpeer",
+          "category": "knolgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 80,
+          "status": "kas"
+        }
+      ]
+    },
+    {
+      "week": 3,
+      "month": "januari",
+      "featured": "witlof",
+      "vegetables": [
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode kool",
+          "category": "koolgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "savooiekool",
+          "category": "koolgroente",
+          "season_score": 85,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "winterwortel",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 85,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 80,
+          "status": "kas"
+        }
+      ]
+    },
+    {
+      "week": 4,
+      "month": "januari",
+      "featured": "pastinaak",
+      "vegetables": [
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "schorseneer",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "aardpeer",
+          "category": "knolgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        }
+      ]
+    },
+    {
+      "week": 5,
+      "month": "februari",
+      "featured": "veldsla",
+      "vegetables": [
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 85,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "winterwortel",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 85,
+          "status": "bewaarseizoen"
+        }
+      ]
+    },
+    {
+      "week": 6,
+      "month": "februari",
+      "featured": "spinazie",
+      "vegetables": [
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 80,
+          "status": "kas"
+        },
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "winterpostelein",
+          "category": "bladgroente",
+          "season_score": 85,
+          "status": "kas"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 85,
+          "status": "bewaarseizoen"
+        }
+      ]
+    },
+    {
+      "week": 7,
+      "month": "februari",
+      "featured": "raapstelen",
+      "vegetables": [
+        {
+          "name": "raapstelen",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 85,
+          "status": "kas"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "radijs",
+          "category": "knolgroente",
+          "season_score": 75,
+          "status": "kas"
+        },
+        {
+          "name": "bosui",
+          "category": "ui-achtige",
+          "season_score": 75,
+          "status": "kas"
+        },
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 8,
+      "month": "februari",
+      "featured": "raapstelen",
+      "vegetables": [
+        {
+          "name": "raapstelen",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "radijs",
+          "category": "knolgroente",
+          "season_score": 80,
+          "status": "kas"
+        },
+        {
+          "name": "paksoi",
+          "category": "bladgroente",
+          "season_score": 75,
+          "status": "kas"
+        },
+        {
+          "name": "rucola",
+          "category": "bladgroente",
+          "season_score": 70,
+          "status": "kas"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 9,
+      "month": "maart",
+      "featured": "spinazie",
+      "vegetables": [
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "raapstelen",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "radijs",
+          "category": "knolgroente",
+          "season_score": 85,
+          "status": "kas"
+        },
+        {
+          "name": "bosui",
+          "category": "ui-achtige",
+          "season_score": 80,
+          "status": "kas"
+        },
+        {
+          "name": "sla",
+          "category": "bladgroente",
+          "season_score": 75,
+          "status": "kas"
+        },
+        {
+          "name": "rucola",
+          "category": "bladgroente",
+          "season_score": 75,
+          "status": "kas"
+        }
+      ]
+    },
+    {
+      "week": 10,
+      "month": "maart",
+      "featured": "raapstelen",
+      "vegetables": [
+        {
+          "name": "raapstelen",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "snijbiet",
+          "category": "bladgroente",
+          "season_score": 70,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "paksoi",
+          "category": "bladgroente",
+          "season_score": 80,
+          "status": "kas"
+        },
+        {
+          "name": "radijs",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "sla",
+          "category": "bladgroente",
+          "season_score": 80,
+          "status": "kas"
+        }
+      ]
+    },
+    {
+      "week": 11,
+      "month": "maart",
+      "featured": "asperge",
+      "vegetables": [
+        {
+          "name": "asperge",
+          "category": "stengelgroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "raapstelen",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "radijs",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "sla",
+          "category": "bladgroente",
+          "season_score": 85,
+          "status": "kas"
+        },
+        {
+          "name": "rucola",
+          "category": "bladgroente",
+          "season_score": 80,
+          "status": "kas"
+        }
+      ]
+    },
+    {
+      "week": 12,
+      "month": "maart",
+      "featured": "asperge",
+      "vegetables": [
+        {
+          "name": "asperge",
+          "category": "stengelgroente",
+          "season_score": 75,
+          "status": "start seizoen"
+        },
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "raapstelen",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "radijs",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "rucola",
+          "category": "bladgroente",
+          "season_score": 85,
+          "status": "kas"
+        },
+        {
+          "name": "bosui",
+          "category": "ui-achtige",
+          "season_score": 80,
+          "status": "kas"
+        }
+      ]
+    },
+    {
+      "week": 13,
+      "month": "maart",
+      "featured": "asperge",
+      "vegetables": [
+        {
+          "name": "asperge",
+          "category": "stengelgroente",
+          "season_score": 85,
+          "status": "opbouw seizoen"
+        },
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "raapstelen",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "sla",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "koolrabi",
+          "category": "koolgroente",
+          "season_score": 70,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 60,
+          "status": "eerste oogst"
+        }
+      ]
+    },
+    {
+      "week": 14,
+      "month": "april",
+      "featured": "asperge",
+      "vegetables": [
+        {
+          "name": "asperge",
+          "category": "stengelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "postelein",
+          "category": "bladgroente",
+          "season_score": 75,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "andijvie",
+          "category": "bladgroente",
+          "season_score": 70,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "bospeen",
+          "category": "wortelgroente",
+          "season_score": 70,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 70,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "koolrabi",
+          "category": "koolgroente",
+          "season_score": 80,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 15,
+      "month": "april",
+      "featured": "asperge",
+      "vegetables": [
+        {
+          "name": "asperge",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "andijvie",
+          "category": "bladgroente",
+          "season_score": 80,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "bospeen",
+          "category": "wortelgroente",
+          "season_score": 80,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "peultjes",
+          "category": "peulvrucht",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "tuinbonen",
+          "category": "peulvrucht",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "sla",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 16,
+      "month": "april",
+      "featured": "asperge",
+      "vegetables": [
+        {
+          "name": "asperge",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "peultjes",
+          "category": "peulvrucht",
+          "season_score": 75,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "tuinbonen",
+          "category": "peulvrucht",
+          "season_score": 75,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "spinazie",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "sla",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "radijs",
+          "category": "knolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "bospeen",
+          "category": "wortelgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 17,
+      "month": "mei",
+      "featured": "asperge",
+      "vegetables": [
+        {
+          "name": "asperge",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "peultjes",
+          "category": "peulvrucht",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "tuinbonen",
+          "category": "peulvrucht",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "doperwten",
+          "category": "peulvrucht",
+          "season_score": 70,
+          "status": "start seizoen"
+        },
+        {
+          "name": "bloemkool",
+          "category": "koolgroente",
+          "season_score": 70,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "broccoli",
+          "category": "koolgroente",
+          "season_score": 70,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 80,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 18,
+      "month": "mei",
+      "featured": "bloemkool",
+      "vegetables": [
+        {
+          "name": "asperge",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "bloemkool",
+          "category": "koolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "broccoli",
+          "category": "koolgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "peultjes",
+          "category": "peulvrucht",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "doperwten",
+          "category": "peulvrucht",
+          "season_score": 80,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "koolrabi",
+          "category": "koolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "sla",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 19,
+      "month": "mei",
+      "featured": "bloemkool",
+      "vegetables": [
+        {
+          "name": "bloemkool",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "broccoli",
+          "category": "koolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "koolrabi",
+          "category": "koolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "komkommer",
+          "category": "vruchtgroente",
+          "season_score": 70,
+          "status": "kas"
+        },
+        {
+          "name": "sla",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 20,
+      "month": "mei",
+      "featured": "courgette",
+      "vegetables": [
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 75,
+          "status": "kas"
+        },
+        {
+          "name": "komkommer",
+          "category": "vruchtgroente",
+          "season_score": 80,
+          "status": "kas"
+        },
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 80,
+          "status": "kas"
+        },
+        {
+          "name": "bloemkool",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "broccoli",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "asperge",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 50,
+          "status": "start seizoen"
+        }
+      ]
+    },
+    {
+      "week": 21,
+      "month": "mei",
+      "featured": "tomaat",
+      "vegetables": [
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "komkommer",
+          "category": "vruchtgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 70,
+          "status": "kas"
+        },
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 70,
+          "status": "kas"
+        },
+        {
+          "name": "bloemkool",
+          "category": "koolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 60,
+          "status": "start seizoen"
+        }
+      ]
+    },
+    {
+      "week": 22,
+      "month": "juni",
+      "featured": "tomaat",
+      "vegetables": [
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "komkommer",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 80,
+          "status": "kas"
+        },
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 80,
+          "status": "kas"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 75,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "snijboon",
+          "category": "peulvrucht",
+          "season_score": 70,
+          "status": "eerste oogst"
+        }
+      ]
+    },
+    {
+      "week": 23,
+      "month": "juni",
+      "featured": "courgette",
+      "vegetables": [
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 85,
+          "status": "kas"
+        },
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 85,
+          "status": "kas"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "snijboon",
+          "category": "peulvrucht",
+          "season_score": 80,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 80,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 24,
+      "month": "juni",
+      "featured": "sperzieboon",
+      "vegetables": [
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "snijboon",
+          "category": "peulvrucht",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "komkommer",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 25,
+      "month": "juni",
+      "featured": "tomaat",
+      "vegetables": [
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 90,
+          "status": "kas"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "maïs",
+          "category": "graangroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 26,
+      "month": "juni",
+      "featured": "paprika",
+      "vegetables": [
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "maïs",
+          "category": "graangroente",
+          "season_score": 75,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 27,
+      "month": "juli",
+      "featured": "tomaat",
+      "vegetables": [
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "snijboon",
+          "category": "peulvrucht",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 28,
+      "month": "juli",
+      "featured": "courgette",
+      "vegetables": [
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "maïs",
+          "category": "graangroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "komkommer",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 29,
+      "month": "juli",
+      "featured": "maïs",
+      "vegetables": [
+        {
+          "name": "maïs",
+          "category": "graangroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "komkommer",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 30,
+      "month": "juli",
+      "featured": "aubergine",
+      "vegetables": [
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "sperzieboon",
+          "category": "peulvrucht",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "wortel",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 31,
+      "month": "augustus",
+      "featured": "pompoen",
+      "vegetables": [
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "courgette",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 32,
+      "month": "augustus",
+      "featured": "tomaat",
+      "vegetables": [
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "aubergine",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 75,
+          "status": "start seizoen"
+        },
+        {
+          "name": "broccoli",
+          "category": "koolgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "bloemkool",
+          "category": "koolgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 60,
+          "status": "eerste oogst"
+        }
+      ]
+    },
+    {
+      "week": 33,
+      "month": "augustus",
+      "featured": "rode biet",
+      "vegetables": [
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 85,
+          "status": "start seizoen"
+        },
+        {
+          "name": "tomaat",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "paprika",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "venkel",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "broccoli",
+          "category": "koolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "wortel",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 34,
+      "month": "augustus",
+      "featured": "pompoen",
+      "vegetables": [
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 75,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 70,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "bloemkool",
+          "category": "koolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "broccoli",
+          "category": "koolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "wortel",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 35,
+      "month": "september",
+      "featured": "pompoen",
+      "vegetables": [
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 80,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "rode kool",
+          "category": "koolgroente",
+          "season_score": 75,
+          "status": "eerste oogst"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        }
+      ]
+    },
+    {
+      "week": 36,
+      "month": "september",
+      "featured": "boerenkool",
+      "vegetables": [
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 75,
+          "status": "start seizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 70,
+          "status": "start seizoen"
+        },
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode kool",
+          "category": "koolgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witte kool",
+          "category": "koolgroente",
+          "season_score": 80,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 37,
+      "month": "september",
+      "featured": "spruiten",
+      "vegetables": [
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "aardpeer",
+          "category": "knolgroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        },
+        {
+          "name": "schorseneer",
+          "category": "wortelgroente",
+          "season_score": 60,
+          "status": "start seizoen"
+        }
+      ]
+    },
+    {
+      "week": 38,
+      "month": "september",
+      "featured": "prei",
+      "vegetables": [
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 70,
+          "status": "start seizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 75,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 39,
+      "month": "september",
+      "featured": "knolselderij",
+      "vegetables": [
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 75,
+          "status": "start seizoen"
+        },
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 70,
+          "status": "start seizoen"
+        }
+      ]
+    },
+    {
+      "week": 40,
+      "month": "oktober",
+      "featured": "boerenkool",
+      "vegetables": [
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 80,
+          "status": "start seizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "schorseneer",
+          "category": "wortelgroente",
+          "season_score": 75,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 41,
+      "month": "oktober",
+      "featured": "spruiten",
+      "vegetables": [
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 85,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode kool",
+          "category": "koolgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "aardpeer",
+          "category": "knolgroente",
+          "season_score": 80,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 80,
+          "status": "start seizoen"
+        }
+      ]
+    },
+    {
+      "week": 42,
+      "month": "oktober",
+      "featured": "pompoen",
+      "vegetables": [
+        {
+          "name": "pompoen",
+          "category": "vruchtgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 43,
+      "month": "oktober",
+      "featured": "witlof",
+      "vegetables": [
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "rode kool",
+          "category": "koolgroente",
+          "season_score": 95,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 44,
+      "month": "november",
+      "featured": "boerenkool",
+      "vegetables": [
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "winterwortel",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "rode kool",
+          "category": "koolgroente",
+          "season_score": 95,
+          "status": "bewaarseizoen"
+        }
+      ]
+    },
+    {
+      "week": 45,
+      "month": "november",
+      "featured": "spruiten",
+      "vegetables": [
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "schorseneer",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "aardpeer",
+          "category": "knolgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 46,
+      "month": "november",
+      "featured": "knolselderij",
+      "vegetables": [
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        }
+      ]
+    },
+    {
+      "week": 47,
+      "month": "november",
+      "featured": "rode kool",
+      "vegetables": [
+        {
+          "name": "rode kool",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "witte kool",
+          "category": "koolgroente",
+          "season_score": 95,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "savooiekool",
+          "category": "koolgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 48,
+      "month": "december",
+      "featured": "boerenkool",
+      "vegetables": [
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        }
+      ]
+    },
+    {
+      "week": 49,
+      "month": "december",
+      "featured": "spruiten",
+      "vegetables": [
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "veldsla",
+          "category": "bladgroente",
+          "season_score": 95,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 50,
+      "month": "december",
+      "featured": "prei",
+      "vegetables": [
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "winterwortel",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        }
+      ]
+    },
+    {
+      "week": 51,
+      "month": "december",
+      "featured": "witlof",
+      "vegetables": [
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "rode kool",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "pastinaak",
+          "category": "wortelgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "schorseneer",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "hoogseizoen"
+        }
+      ]
+    },
+    {
+      "week": 52,
+      "month": "december",
+      "featured": "boerenkool",
+      "vegetables": [
+        {
+          "name": "boerenkool",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "spruiten",
+          "category": "koolgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "prei",
+          "category": "stengelgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "witlof",
+          "category": "bladgroente",
+          "season_score": 100,
+          "status": "hoogseizoen"
+        },
+        {
+          "name": "knolselderij",
+          "category": "knolgroente",
+          "season_score": 100,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "winterwortel",
+          "category": "wortelgroente",
+          "season_score": 95,
+          "status": "bewaarseizoen"
+        },
+        {
+          "name": "rode biet",
+          "category": "wortelgroente",
+          "season_score": 90,
+          "status": "bewaarseizoen"
+        }
+      ]
+    }
+  ]
+}

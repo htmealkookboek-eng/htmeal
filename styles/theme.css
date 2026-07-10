@@ -1,0 +1,53 @@
+:root {
+    --color-background: #FAF8F3;
+    --color-paper: #F4F1E8;
+    --color-text: #343434;
+    --color-muted-terra: #A87F6E;
+    --color-muted-olive: #7C8066;
+    --color-muted-mustard: #B49A5F;
+
+    --font-size-large: 48px;
+    --font-size-medium: 18px;
+    --font-size-small: 13px;
+
+    --space-xs: 8px;
+    --space-s: 16px;
+    --space-m: 24px;
+    --space-l: 32px;
+    --space-xl: 48px;
+    --space-xxl: 64px;
+
+    --radius-soft: 12px;
+    --shadow-soft: 0 16px 40px rgba(52, 52, 52, 0.08);
+    --transition-fast: 150ms ease-out;
+    --transition-medium: 220ms ease-out;
+}
+
+body {
+    margin: 0;
+    font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+    background: var(--color-background);
+    color: var(--color-text);
+}
+
+.card {
+    background: var(--color-paper);
+    border-radius: var(--radius-soft);
+    box-shadow: var(--shadow-soft);
+    padding: var(--space-l);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.text-muted {
+    color: #78726b;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--space-l);
+}

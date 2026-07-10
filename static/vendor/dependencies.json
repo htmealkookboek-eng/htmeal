@@ -1,0 +1,14 @@
+{
+  "vendor": [
+    {
+      "name": "d3",
+      "version": "7.9.0",
+      "file": "d3.min.js"
+    },
+    {
+      "name": "topojson-client",
+      "version": "3.1.0",
+      "file": "topojson-client.min.js"
+    }
+  ]
+}
