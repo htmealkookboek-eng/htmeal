@@ -165,8 +165,12 @@ function saveKnownUsers(list) {
 function addKnownUser(name) {
   const normalized = (name || '').trim();
   if (!normalized) return;
-  const users = getKnownUsers().filter(user => user !== normalized);
-  users.unshift(normalized);
+  const canonical = normalized;
+  const users = getKnownUsers()
+    .map(user => String(user || '').trim())
+    .filter(Boolean)
+    .filter(user => user.toLowerCase() !== canonical.toLowerCase());
+  users.unshift(canonical);
   saveKnownUsers(users);
 }
 function updateUserDisplay() {

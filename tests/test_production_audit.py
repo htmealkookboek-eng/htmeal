@@ -176,6 +176,39 @@ class HTMealProductionAuditTests(unittest.TestCase):
         recipe_still_exists = any(str(item.get("id")) == recipe_id for item in recipes_after_delete_payload)
         self.assertFalse(recipe_still_exists)
 
+    def test_username_matching_is_case_insensitive_and_unique(self):
+        base_username = f"CaseUser{uuid.uuid4().hex[:8]}"
+        first_password = "CasePass123!"
+        second_password = "CasePass456!"
+
+        first_opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+        second_opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()))
+
+        first_status, first_payload = self._request(
+            "/api/auth",
+            method="POST",
+            data={"username": base_username, "password": first_password, "action": "register"},
+            opener=first_opener,
+        )
+        self.assertEqual(first_status, 200, first_payload)
+
+        duplicate_status, duplicate_payload = self._request(
+            "/api/auth",
+            method="POST",
+            data={"username": base_username.lower(), "password": second_password, "action": "register"},
+            opener=second_opener,
+        )
+        self.assertEqual(duplicate_status, 400, duplicate_payload)
+
+        login_status, login_payload = self._request(
+            "/api/auth",
+            method="POST",
+            data={"username": base_username.upper(), "password": first_password, "action": "login"},
+            opener=second_opener,
+        )
+        self.assertEqual(login_status, 200, login_payload)
+        self.assertEqual(login_payload.get("username"), base_username)
+
     def test_any_authenticated_user_can_modify_any_recipe(self):
         attacker_user = f"AuditUserAttacker{uuid.uuid4().hex[:8]}"
         owner_user = f"AuditUserOwner{uuid.uuid4().hex[:8]}"

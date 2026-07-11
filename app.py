@@ -96,12 +96,31 @@ def load_users():
     try:
         with USERS_LOCK:
             with open(USERS_FILE, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                return canonicalize_users(json.load(f))
     except Exception:
         return {}
 
 def save_users(users):
-    save_json_file(users, USERS_FILE, USERS_LOCK)
+    save_json_file(canonicalize_users(users), USERS_FILE, USERS_LOCK)
+
+
+def canonicalize_users(users):
+    if not isinstance(users, dict):
+        return {}
+    canonicalized = {}
+    for stored_username, info in users.items():
+        normalized_name = normalize_username(stored_username)
+        if not normalized_name:
+            continue
+        lookup_key = get_username_lookup_key(normalized_name)
+        existing_key = next((name for name in canonicalized if get_username_lookup_key(name) == lookup_key), '')
+        if existing_key:
+            merged_info = dict(canonicalized[existing_key] or {})
+            merged_info.update(info or {})
+            canonicalized[existing_key] = merged_info
+        else:
+            canonicalized[normalized_name] = dict(info or {})
+    return canonicalized
 
 
 def load_json_file(path, lock, default=None):
@@ -133,6 +152,22 @@ def hash_password(password):
 
 def verify_password(password, hashed):
     return hash_password(password) == hashed
+
+
+def normalize_username(username):
+    return str(username or '').strip()
+
+
+def get_username_lookup_key(username):
+    return normalize_username(username).casefold()
+
+
+def find_username_key(users_data, username):
+    lookup_key = get_username_lookup_key(username)
+    for stored_username in users_data:
+        if get_username_lookup_key(stored_username) == lookup_key:
+            return str(stored_username)
+    return ''
 
 
 def setup_logging():
@@ -404,9 +439,9 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             search_mgr = RecipeSearch(recipes_data)
         client_ip = self.client_address[0] if hasattr(self, 'client_address') else 'unknown'
         if path == "/api/auth":
-            auth_user = (body.get('username') or '').strip() or user
+            auth_user = normalize_username(body.get('username')) or user
             ip_key = f"auth:ip:{client_ip}"
-            user_key = f"auth:user:{auth_user}" if auth_user else None
+            user_key = f"auth:user:{get_username_lookup_key(auth_user)}" if auth_user else None
             if is_rate_limited(ip_key, limit=AUTH_RATE_LIMIT_PER_IP) or (user_key and is_rate_limited(user_key, limit=AUTH_RATE_LIMIT_PER_USER)):
                 self.send_response(429)
                 self.send_header('Content-type', 'application/json')
@@ -426,7 +461,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             self.wfile.write(json.dumps(payload).encode('utf-8'))
 
         if path == "/api/auth":
-            username = (body.get('username') or '').strip()
+            username = normalize_username(body.get('username'))
             password = (body.get('password') or '').strip()
             action = body.get('action') or 'login'
             if not username or not password:
@@ -434,7 +469,8 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 return
             users_data = load_users()
             if action == 'register':
-                if username in users_data:
+                existing_username = find_username_key(users_data, username)
+                if existing_username:
                     send_json(400, {'error': 'User already exists'})
                     return
                 from logic.achievements import check_and_award_achievements
@@ -449,16 +485,17 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 save_users(users_data)
                 send_json(200, {'status': 'registered', 'username': username, 'session_token': token}, set_cookie=token)
             else:
-                if username not in users_data:
+                existing_username = find_username_key(users_data, username)
+                if not existing_username:
                     send_json(404, {'error': 'User not found'})
                     return
-                if not verify_password(password, users_data[username].get('password', '')):
+                if not verify_password(password, users_data[existing_username].get('password', '')):
                     send_json(401, {'error': 'Invalid password'})
                     return
                 token = uuid.uuid4().hex
-                users_data[username]['session_token'] = token
+                users_data[existing_username]['session_token'] = token
                 save_users(users_data)
-                send_json(200, {'status': 'ok', 'username': username, 'session_token': token}, set_cookie=token)
+                send_json(200, {'status': 'ok', 'username': existing_username, 'session_token': token}, set_cookie=token)
             return
 
         if path == "/api/logout":
@@ -747,16 +784,17 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             return
 
         if path == "/api/delete_user":
-            target = body.get('user') or ''
+            target = normalize_username(body.get('user') or '')
             if not target:
                 send_json(400, {'error': 'No user specified'})
                 return
-            if user != target:
+            if get_username_lookup_key(user) != get_username_lookup_key(target):
                 send_json(401, {'error': 'Not authorized to delete other users'})
                 return
             users_data = load_users()
-            if target in users_data:
-                users_data.pop(target, None)
+            stored_target = find_username_key(users_data, target)
+            if stored_target:
+                users_data.pop(stored_target, None)
                 save_users(users_data)
             for r in recipes_data:
                 favs = r.get('favorited_by') or []
