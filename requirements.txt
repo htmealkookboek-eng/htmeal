@@ -1,0 +1,2 @@
+# Python runtime requirements for Render deployment
+# No external dependencies are required for the current app startup path.

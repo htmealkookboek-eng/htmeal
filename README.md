@@ -11,6 +11,14 @@ A modular desktop-first cookbook application scaffold in Python.
 - `assets/` - fonts, icons, textures, patterns
 - `styles/` - shared theme CSS variables and styles
 
+## Deployment
+
+- Primary hosted deployment target: Render
+- Use the repository root as the service source
+- Render should start the app with `python app.py`
+- The server now reads `PORT` from the environment, so it works correctly on Render
+- The legacy static GitHub Pages build script remains available as a `build:static` npm script
+
 ## Next steps
 
 - Add recipe data to `data/recipes.json`

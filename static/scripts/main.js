@@ -936,6 +936,11 @@ async function renderHeroSection(recipes) {
   const shuffled = [...recipes].sort(() => Math.random() - 0.5);
   const hasFeaturedCollection = Math.random() < 0.45;
   const heroRecipe = shuffled.find(r => r.image) || recipes[0] || null;
+  const spotlightFallbackImage = spotlight?.spotlightImage || (spotlight?.seasonalVeggies?.[0]?.image) || 'assets/img/tomaat.webp';
+  const heroImage = heroRecipe?.image || spotlightFallbackImage;
+  const heroImageAlt = heroRecipe?.image
+    ? `Receptfoto voor ${escapeHtml(heroRecipe.title)}`
+    : `Seizoensgroenteafbeelding voor ${spotlight ? escapeHtml(spotlight.featured) : 'de seizoensgroente'}`;
 
   const tagCounts = {};
   recipes.forEach(r => {
@@ -990,9 +995,8 @@ async function renderHeroSection(recipes) {
 
     const imageCard = document.createElement('div');
     imageCard.className = 'hero-image-card hero-image-card--compact';
-    const fallbackImage = spotlight && spotlight.spotlightImage ? spotlight.spotlightImage : 'assets/img/tomaat.webp';
     imageCard.innerHTML = `
-      <img src="${heroRecipe.image || fallbackImage}" alt="Receptfoto voor ${escapeHtml(heroRecipe.title)}">
+      <img src="${heroImage}" alt="${heroImageAlt}">
       <div class="hero-image-overlay"><span>${heroRecipe.title}</span></div>
     `;
     imageCard.onclick = () => openRecipeView(heroRecipe);
@@ -1049,7 +1053,7 @@ async function renderHeroSection(recipes) {
     const imageCard = document.createElement('div');
     imageCard.className = 'hero-image-card';
     imageCard.innerHTML = `
-      <img src="${heroRecipe.image}" alt="Receptfoto voor ${escapeHtml(heroRecipe.title)}">
+      <img src="${heroImage}" alt="${heroImageAlt}">
       <div class="hero-image-overlay"><span>${heroRecipe.title}</span></div>
     `;
     imageCard.onclick = () => openRecipeView(heroRecipe);

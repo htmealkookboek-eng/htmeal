@@ -1,5 +1,5 @@
 """
-Build a static copy of the app in `dist/` suitable for GitHub Pages.
+Build a static copy of the app in `dist/` suitable for static hosting such as Render.
 - Copies `static/` -> `dist/`
 - Copies `data/*.json` -> `dist/data/`
 - Adjusts `index.html` to insert `scripts/fetch-mock.js` before `scripts/main.js`
@@ -58,7 +58,7 @@ def main():
     copy_static()
     copy_data()
     patch_index_html()
-    print('Done. Inspect dist/ before publishing to GitHub Pages')
+    print('Done. Inspect dist/ before publishing to your static host (Render)')
 
 
 if __name__ == '__main__':

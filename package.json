@@ -8,6 +8,7 @@
     "topojson-client": "^3.1.0"
   },
   "scripts": {
-    "build:gh-pages": "python scripts/build_for_gh_pages.py"
+    "build:static": "python scripts/build_for_gh_pages.py",
+    "build:gh-pages": "npm run build:static"
   }
 }

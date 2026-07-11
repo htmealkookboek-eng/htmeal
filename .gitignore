@@ -29,6 +29,10 @@ backup/
 *.swo
 .tmp_verify_delete.py
 
+# Build output
+/dist/
+dist/
+
 # OS files
 .DS_Store
 Thumbs.db

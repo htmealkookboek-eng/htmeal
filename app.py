@@ -1,4 +1,4 @@
-#htmealkookboek@gmail.com
+#htmealkookboek@gmail.com github & Render
 import pathlib
 import json
 import threading
@@ -811,7 +811,12 @@ def open_browser_in_chrome(url):
             pass
 
 
-def run_server(port=8000):
+def run_server(port=None):
+    if port is None:
+        port = int(os.environ.get("PORT", "8000"))
+    else:
+        port = int(port)
+
     handler = CookbookHandler
     try:
         server = ThreadingHTTPServer(("", port), handler)
@@ -819,7 +824,8 @@ def run_server(port=8000):
         server = HTTPServer(("", port), handler)
     url = f"http://localhost:{port}"
     print(f"Serving quiet cookbook at {url}")
-    open_browser_in_chrome(url)
+    if not os.environ.get("RENDER"):
+        open_browser_in_chrome(url)
     server.serve_forever()
 
 def main():
