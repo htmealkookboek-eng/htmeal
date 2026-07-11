@@ -3,6 +3,11 @@ services:
     name: htmeal-kookboek
     env: python
     plan: free
-    buildCommand: ""
+    buildCommand: pip install -r requirements.txt
     startCommand: python app.py
+    envVars:
+      - key: RENDER
+        value: "true"
+      - key: PYTHONUNBUFFERED
+        value: "1"
     autoDeploy: true

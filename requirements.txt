@@ -1,2 +1,3 @@
 # Python runtime requirements for Render deployment
-# No external dependencies are required for the current app startup path.
+# Keep a web server entrypoint available even if Render falls back to its default command.
+gunicorn==23.0.0
