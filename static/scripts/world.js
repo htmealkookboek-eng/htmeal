@@ -183,8 +183,8 @@ function loadScript(url) {
 async function ensureWorldAssetsLoaded() {
     if (window.d3 && window.topojson) return;
     await Promise.all([
-        loadScript('/node_modules/d3/dist/d3.min.js'),
-        loadScript('/node_modules/topojson-client/dist/topojson-client.min.js')
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js'),
+        loadScript('https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js')
     ]);
 }
 

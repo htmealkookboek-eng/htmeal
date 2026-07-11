@@ -24,15 +24,132 @@
   "Tim en Stella": {
     "password": "5602c670cd35ad042efaab66ee1050fce53b87bba78515fb499f2e07e02149d6",
     "created": "2026-07-10T17:23:14.747517",
-    "session_token": "6c06b19e681247bc83ebc5d33599e0d2",
+    "session_token": "f27dafc3df0c45dcac41db275de09b68",
     "achievements": {
       "account_created": {
         "earned_at": "2026-07-10T17:23:14.747517"
+      },
+      "first_recipe": {
+        "earned_at": "2026-07-11T21:39:06.677335"
+      },
+      "recipe_lover": {
+        "earned_at": "2026-07-11T22:07:10.654105"
+      }
+    },
+    "stats": {
+      "recipes_created": 5,
+      "favorites_count": 1,
+      "collections_count": 0,
+      "cooking_sessions": 0,
+      "notes_count": 0
+    }
+  },
+  "AuditUser531714e1": {
+    "password": "fde59fbc1c198f9d5d1b67671324824f99dcd4c86e4b8130f0ce8370a2130455",
+    "created": "2026-07-11T22:11:15.220630",
+    "achievements": {
+      "account_created": {
+        "earned_at": "2026-07-11T22:11:15.220630"
       }
     },
     "stats": {
       "recipes_created": 0,
-      "favorites_count": 1,
+      "favorites_count": 0,
+      "collections_count": 0,
+      "cooking_sessions": 0,
+      "notes_count": 0
+    }
+  },
+  "AuditUser4f9fdee6": {
+    "password": "fde59fbc1c198f9d5d1b67671324824f99dcd4c86e4b8130f0ce8370a2130455",
+    "created": "2026-07-11T22:11:46.308249",
+    "session_token": "f20998a6bb2e4d7abe27192a0be01249",
+    "achievements": {
+      "account_created": {
+        "earned_at": "2026-07-11T22:11:46.308249"
+      }
+    },
+    "stats": {
+      "recipes_created": 0,
+      "favorites_count": 0,
+      "collections_count": 0,
+      "cooking_sessions": 0,
+      "notes_count": 0
+    }
+  },
+  "CookieProbed1dd00a5": {
+    "password": "fcb079c7b0d0274df1e60bad2813f749e47c6f0e782ed7cbc9d5ed3071fddf44",
+    "created": "2026-07-11T22:12:47.327373",
+    "session_token": "f2b29b774f3f4e12a987669c562a268d",
+    "achievements": {
+      "account_created": {
+        "earned_at": "2026-07-11T22:12:47.327373"
+      },
+      "first_recipe": {
+        "earned_at": "2026-07-11T22:12:51.430690"
+      }
+    },
+    "stats": {
+      "recipes_created": 1,
+      "favorites_count": 0,
+      "collections_count": 0,
+      "cooking_sessions": 0,
+      "notes_count": 0
+    }
+  },
+  "AuditUserXf404775b": {
+    "password": "fde59fbc1c198f9d5d1b67671324824f99dcd4c86e4b8130f0ce8370a2130455",
+    "created": "2026-07-11T22:13:09.951492",
+    "session_token": "f5cb25ca121a4b259c1fbb1c43cf645c",
+    "achievements": {
+      "account_created": {
+        "earned_at": "2026-07-11T22:13:09.951492"
+      },
+      "first_recipe": {
+        "earned_at": "2026-07-11T22:13:14.082186"
+      }
+    },
+    "stats": {
+      "recipes_created": 1,
+      "favorites_count": 0,
+      "collections_count": 0,
+      "cooking_sessions": 0,
+      "notes_count": 0
+    }
+  },
+  "AuditUser91357b72": {
+    "password": "fde59fbc1c198f9d5d1b67671324824f99dcd4c86e4b8130f0ce8370a2130455",
+    "created": "2026-07-11T22:16:05.262492",
+    "achievements": {
+      "account_created": {
+        "earned_at": "2026-07-11T22:16:05.262492"
+      },
+      "first_recipe": {
+        "earned_at": "2026-07-11T22:16:19.659964"
+      }
+    },
+    "stats": {
+      "recipes_created": 1,
+      "favorites_count": 0,
+      "collections_count": 0,
+      "cooking_sessions": 0,
+      "notes_count": 0
+    }
+  },
+  "AuditUser523d83dc": {
+    "password": "fde59fbc1c198f9d5d1b67671324824f99dcd4c86e4b8130f0ce8370a2130455",
+    "created": "2026-07-11T22:17:01.310501",
+    "achievements": {
+      "account_created": {
+        "earned_at": "2026-07-11T22:17:01.310501"
+      },
+      "first_recipe": {
+        "earned_at": "2026-07-11T22:17:15.661991"
+      }
+    },
+    "stats": {
+      "recipes_created": 1,
+      "favorites_count": 0,
       "collections_count": 0,
       "cooking_sessions": 0,
       "notes_count": 0

@@ -4177,12 +4177,19 @@
       "Serveer de kaas direct."
     ],
     "servings": 4,
-    "cooking_time": "??",
+    "cooking_time": 30,
     "tags": [
       "wim",
       "yvonne",
-      "Archief"
-    ]
+      "Archief",
+      "Snacks",
+      "Tim en Stella"
+    ],
+    "images": [],
+    "notes": [],
+    "note": "",
+    "owner": "Tim en Stella",
+    "favorited_by": []
   },
   {
     "id": "7a975a37-7ea8-4d50-9f6e-01ac55fbd5a7",
@@ -16751,68 +16758,95 @@
     ]
   },
   {
-    "id": "620a5b14-1a8d-4fe9-a0e9-d7a4ba7daf8c",
-    "title": "de lekkerste tongschar uit de braadslee",
-    "description": "Een frisse combinatie voor zomerse dagen. Lekker met een bolletje ijs of een scheutje yoghurt. Een gerecht waarvan je keuken lekker gaat ruiken.",
-    "image": "",
-    "extra_image": "",
-    "source": "Uit het archief",
-    "ingredients": [
-      "voor 4 personen:"
+    "title": "Burrito met gebakken linzen en romige spitskoolsalade",
+    "image": "https://static.ah.nl/static/recepten/img_RAM_PRD131887_1024x748_JPG.jpg",
+    "images": [
+      "https://static.ah.nl/static/recepten/img_RAM_PRD131887_1024x748_JPG.jpg"
     ],
-    "instructions": [
-      "4 hele tongscharren 2 handen vol rode en gele kerstomaatjes, gehalveerd 4 tenen knoflook in dunne plakjes handvol verse oregano of basilicum bos lenteuitjes in dunne ringen 1 el balsamicoazijn zout, peper 2 citroenen, gehalveerd maar eerst de schil geraspt olijfolie handvol zwarte olijven, ontpit en gehakt handvol verse peterselie, fijngehakt Snijd de vis met een scherp mes in tot op de graat.",
-      "Verwarm de oven op 200 graden.",
-      "Doe de tomaten, oregano of basilicum, lenteuitjes, balsamico, een snufje zout en peper en de geraspte schil en het sap van 1 citroen bij elkaar in een kom.",
-      "Maak aan met een paar el olie.",
-      "Roer goed en spreidt uit op de bodem van een grote braadslee.",
-      "Leg de vis kop aan staart.",
-      "Doe nu de olijven, peterselie en het sap en de geraspte schil van de tweede citroen in de kom waar de tomaten in zaten.",
-      "Maak het mengsel aan met wat olie en schep een gelijke hoeveelheid ervan midden op elke vis.",
-      "Zet de braadslee 12-15 minuten in de oven."
+    "extra_images": [],
+    "description": "Mexico meets jouw voorraadkast! Deze burrito's vul je met vers en voorraad.",
+    "notes": [],
+    "note": "",
+    "source": "https://www.ah.nl/allerhande/recept/R-R1193886/burrito-met-gebakken-linzen-en-romige-spitskoolsalade",
+    "tags": [
+      "mexicaans",
+      "vegetarisch",
+      "bakken",
+      "zonder vlees/vis",
+      "wrap",
+      "hoofdgerecht",
+      "wat eten we vandaag",
+      "Tim en Stella"
     ],
     "servings": 4,
-    "cooking_time": "??",
-    "tags": [
-      "wim",
-      "yvonne",
-      "Archief"
+    "cooking_time": 25,
+    "ingredients": [
+      "2 rode uien",
+      "800 g linzen in blik",
+      "150 g zongedroogde tomaten",
+      "200 g groene olijven gevuld met citroen",
+      "750 g spitskolen",
+      "100 g zuivelspread knoflook en kruiden",
+      "8 tortillawraps",
+      "175 g geraspte Goudse jonge kaas"
     ],
-    "favorited_by": [
-      "Tim"
-    ]
+    "instructions": [
+      "Snipper de uien. Spoel de linzen af en laat uitlekken in een vergiet.",
+      "Laat de zongedroogde tomaten uitlekken. Bewaar 2 el olie (per 4 personen). Snijd de zongedroogde tomaten in reepjes.",
+      "Laat de olijven uitlekken en halveer in de breedte.",
+      "Verhit de helft van de tomatenolie in een koekenpan op middelhoog vuur. Bak de ui 2 min.",
+      "Voeg de linzen, reepjes zongedroogde tomaten en olijven toe en bak nog ca. 5 min. op hoog vuur. Breng op smaak met peper en zout.",
+      "Halveer de spitskool in de lengte en verwijder de harde kern. Snijd de kool in dunne reepjes.",
+      "Verhit de rest van de tomatenolie in een hapjespan op middelhoog vuur. Bak de spitskool ca. 3 min.",
+      "Voeg de zuivelspread toe en meng erdoor. Breng op smaak met peper en eventueel zout.",
+      "Verwarm de tortilla\u2019s volgens de aanwijzingen op de verpakking.",
+      "Verdeel de gebakken linzen en warme spitskoolsalade over de tortilla. Bestrooi met de kaas. Rol de tortilla\u2019s op."
+    ],
+    "id": "d157cd14-b3e0-4e30-931c-77a11c11d040",
+    "owner": "Tim en Stella"
   },
   {
-    "id": "1950f107-d147-43d7-ada4-ccb8a43523a0",
-    "title": "kalfvlees met appel roomsaus",
-    "description": "Een aardige keuze als je iets simpels wilt klaarmaken. Ideaal met ingredi\u00ebnten als smaakmaker.",
-    "image": "",
-    "extra_image": "",
-    "source": "Uit het archief",
+    "id": "75bdca34-edf6-4449-a616-11d8273cf0d0",
+    "title": "Owner Recipe fc13dff8",
+    "description": "Owner-owned record",
+    "owner": "",
+    "source": "audit-test",
+    "tags": [
+      "owner",
+      "AuditUserOwnerc18799bc"
+    ],
+    "servings": 2,
+    "cooking_time": 20,
     "ingredients": [
-      "Ingredi\u00ebnten:",
-      "3 middelgrote jonagoldappelen",
-      "Boter",
-      "4 kalfsmedaillons van 140 gram elk",
-      "Peper",
-      "Zout",
-      "10 cl calvados",
-      "4 dl room",
-      "1 tuiltje waterkers",
-      "8 grote frietaardappelen"
+      "1 owner ingredient"
     ],
     "instructions": [
-      "Bereiding: Schil de appelen met een scherp mesje Verdeel ze in 4 en verwijder het klokhuis Snijd elk deel nog eens in 4 partjes, zodat u maantjes krijgt Bak de partjes Jonagold goudgeel in een noot boter Verwijder de appelpartjes en houd ze warm (zorg ervoor dat de partjes niet gekraakt worden) Dep de kalfsmedaillons droog met absorberend papier Geef ze een mooie ronde vorm en knoop er een eindje keukentouw omheen Kruid met peper en zout Bak de kalfsmedaillons aan beide zijden bruin in een noot boter, maar zorg ervoor dat het vlees binnenin licht rose blijft Neem ze uit de pan en verwijder de bak-boter Maak de aanbaksels los met de calvados Doe er de room bij en kook in tot sausdikte Controleer de kruiding en roer een nootje koude boter door een zeef Warm de kalsmedaillons en de Jonagoldpartjes nog even op in een hete oven Schik zes appelpartjes in een waaier op het bord Daartegen plaatst u de kalfsmedaillons Vooraan lepelt u wat saus Garneer met een boeketje waterkers Serveer hierbij een viertal dikke frieten van 1.",
-      "5 X 1.",
-      "5 cm.",
-      "en 8 cm lang, voorgebakken op 130 graden en afgebakken op 180 graden Leg ze kruisgewijs op elkaar Serveer de resterende appelpartjes en frietjes er achteraf bij Schenk hierbij een glaasje witte Graves, of een Tavel (rose)."
+      "Owned by owner user"
     ],
-    "servings": 4,
-    "cooking_time": "??",
+    "image": "",
+    "images": [],
+    "notes": []
+  },
+  {
+    "id": "f3174bfb-db9f-4ecb-883b-6f3083a8b50e",
+    "title": "Probe Recipe",
+    "description": "Probe",
+    "owner": "CookieProbed1dd00a5",
+    "source": "probe",
     "tags": [
-      "wim",
-      "yvonne",
-      "Archief"
-    ]
+      "probe",
+      "CookieProbed1dd00a5"
+    ],
+    "servings": 2,
+    "cooking_time": 15,
+    "ingredients": [
+      "1 thing"
+    ],
+    "instructions": [
+      "Do it"
+    ],
+    "image": "",
+    "images": [],
+    "notes": []
   }
 ]

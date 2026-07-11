@@ -61,6 +61,8 @@ CSRF_HEADER = "X-CSRF-Token"
 
 RATE_LIMITS = {}
 RATE_LIMIT_WINDOW_SECONDS = 60
+AUTH_RATE_LIMIT_PER_IP = 20
+AUTH_RATE_LIMIT_PER_USER = 10
 
 # File locks to protect concurrent access
 RECIPE_LOCK = threading.Lock()
@@ -153,7 +155,16 @@ def parse_json_body(body_bytes):
 
 
 def valid_data_url(value):
-    return isinstance(value, str) and len(value) <= MAX_IMAGE_DATA_URL_LENGTH and any(value.startswith(prefix) for prefix in ALLOWED_IMAGE_PREFIXES)
+    if not isinstance(value, str):
+        return False
+    stripped = value.strip()
+    if not stripped:
+        return True
+    if stripped.startswith('data:image/'):
+        return len(stripped) <= MAX_IMAGE_DATA_URL_LENGTH and any(stripped.startswith(prefix) for prefix in ALLOWED_IMAGE_PREFIXES)
+    if stripped.startswith(('http://', 'https://', '/', './', '../', 'assets/', 'static/')):
+        return True
+    return False
 
 
 def validate_recipe_payload(recipe):
@@ -242,11 +253,18 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                     return username
         return ''
 
+    def get_cookie_suffix(self):
+        forwarded_proto = (self.headers.get('X-Forwarded-Proto') or '').lower()
+        if os.environ.get('RENDER') or forwarded_proto.startswith('https'):
+            return '; Secure'
+        return ''
+
     def set_session_cookie(self, token=None, delete=False):
+        cookie_suffix = self.get_cookie_suffix()
         if delete:
-            self.send_header('Set-Cookie', 'session=; Max-Age=0; Path=/; SameSite=Lax')
+            self.send_header('Set-Cookie', f'session=; Max-Age=0; Path=/; SameSite=Lax{cookie_suffix}')
         elif token:
-            self.send_header('Set-Cookie', f'session={token}; Max-Age=31536000; Path=/; HttpOnly; SameSite=Lax')
+            self.send_header('Set-Cookie', f'session={token}; Max-Age=31536000; Path=/; HttpOnly; SameSite=Lax{cookie_suffix}')
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
@@ -313,12 +331,12 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             user = self.get_user_name(params)
             self.wfile.write(json.dumps({"user": user}).encode("utf-8"))
         elif path == "/api/favorites":
-            # return recipes favorited by the authenticated user only
+            # Return recipes favorited by the authenticated user only.
             try:
                 all_recipes = load_recipes(RECIPE_FILE)
             except Exception:
                 all_recipes = []
-            owner = (params.get("user", [""])[0] or "").strip() or self.get_user_name(params)
+            owner = self.get_user_name(params)
             if not owner:
                 self.wfile.write(json.dumps([]).encode("utf-8"))
                 return
@@ -377,12 +395,11 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             collection_mgr = RecipeCollection(recipes_data)
             search_mgr = RecipeSearch(recipes_data)
         client_ip = self.client_address[0] if hasattr(self, 'client_address') else 'unknown'
-        auth_paths = ("/api/auth", "/api/logout", "/api/delete_user")
-        if path in auth_paths:
+        if path == "/api/auth":
             auth_user = (body.get('username') or '').strip() or user
             ip_key = f"auth:ip:{client_ip}"
             user_key = f"auth:user:{auth_user}" if auth_user else None
-            if is_rate_limited(ip_key, limit=10) or (user_key and is_rate_limited(user_key, limit=5)):
+            if is_rate_limited(ip_key, limit=AUTH_RATE_LIMIT_PER_IP) or (user_key and is_rate_limited(user_key, limit=AUTH_RATE_LIMIT_PER_USER)):
                 self.send_response(429)
                 self.send_header('Content-type', 'application/json')
                 self.end_headers()
@@ -392,10 +409,11 @@ class CookbookHandler(SimpleHTTPRequestHandler):
         def send_json(status, payload, set_cookie=None, delete_cookie=False):
             self.send_response(status)
             self.send_header('Content-type', 'application/json')
+            cookie_suffix = self.get_cookie_suffix()
             if delete_cookie:
-                self.send_header('Set-Cookie', 'session=; Max-Age=0; Path=/; SameSite=Lax')
+                self.send_header('Set-Cookie', f'session=; Max-Age=0; Path=/; SameSite=Lax{cookie_suffix}')
             elif set_cookie:
-                self.send_header('Set-Cookie', f'session={set_cookie}; Max-Age=31536000; Path=/; HttpOnly; SameSite=Lax')
+                self.send_header('Set-Cookie', f'session={set_cookie}; Max-Age=31536000; Path=/; HttpOnly; SameSite=Lax{cookie_suffix}')
             self.end_headers()
             self.wfile.write(json.dumps(payload).encode('utf-8'))
 
@@ -598,6 +616,10 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             if not new_recipe:
                 send_json(400, {'error': 'No recipe provided'})
                 return
+            valid, validation_error = validate_recipe_payload(new_recipe)
+            if not valid:
+                send_json(400, {'error': validation_error})
+                return
             if body.get('action') == 'delete':
                 recipe_id = str(new_recipe.get('id', '')).strip()
                 if not recipe_id:
@@ -655,14 +677,15 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 if 'favorited_by' not in new_recipe:
                     new_recipe['favorited_by'] = existing.get('favorited_by', [])
             else:
-                new_recipe['owner'] = new_recipe.get('owner') or user
+                new_recipe['owner'] = user
             owner_tag = str(new_recipe.get('owner', user)).strip()
             tags = [t for t in new_recipe.get('tags', []) if isinstance(t, str)]
             if owner_tag and not any(t.strip().lower() == owner_tag.lower() for t in tags):
                 tags.append(owner_tag)
             new_recipe['tags'] = tags
-            recipes_data[existing_idx] = new_recipe if existing_idx >= 0 else new_recipe
-            if existing_idx < 0:
+            if existing_idx >= 0:
+                recipes_data[existing_idx] = new_recipe
+            else:
                 recipes_data.append(new_recipe)
             save_recipes(recipes_data, RECIPE_FILE)
             collection_mgr = RecipeCollection(recipes_data)
@@ -812,6 +835,7 @@ def open_browser_in_chrome(url):
 
 
 def run_server(port=None):
+    ensure_db()
     if port is None:
         port = int(os.environ.get("PORT", "8000"))
     else:

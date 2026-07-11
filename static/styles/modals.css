@@ -511,9 +511,9 @@
 }
 
 #btn-start-cooking.btn.btn-primary {
-  border-radius: 999px;
-  padding: 14px 24px;
-  font-size: 0.95rem;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 0.9rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -630,16 +630,16 @@
 }
 
 .photo-preview-container::before {
-  content: 'Klik hier of sleep een afbeelding hiernaartoe om een extra foto toe te voegen.';
+  content: 'Tik hier om foto’s uit je filmrol of camera toe te voegen.';
   color: #667;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   display: block;
   width: 100%;
 }
 
 .photo-preview {
-  width: 100px;
-  height: 100px;
+  width: 94px;
+  height: 94px;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(34,80,149,0.12);
@@ -731,6 +731,42 @@
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 720px) {
+  .image-upload-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .image-upload-panel .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .photo-preview-container {
+    min-height: 104px;
+    padding: 10px;
+    gap: 10px;
+  }
+  .photo-preview {
+    width: 84px;
+    height: 84px;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  .editor-layout {
+    gap: var(--space-3);
+  }
+  .editor-field input,
+  .editor-field textarea {
+    padding: 12px;
+    font-size: 0.98rem;
+  }
+  .modal-body {
+    padding: var(--space-4);
+  }
 }
 
 
@@ -1041,12 +1077,14 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  height: min(85vh, 100%);
+  height: min(85dvh, 100%);
   width: min(100vw, 900px);
   max-width: 1000px !important;
+  max-height: calc(100dvh - 20px);
   padding: calc(var(--space-5) + 4px);
   overflow: hidden;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 #cooking-step-meta {
   font-family: var(--font-mono);
@@ -1206,6 +1244,34 @@
 }
 
 @media (max-width: 720px) {
+  #cooking-mode .modal-content {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+    height: auto !important;
+    max-height: calc(100dvh - 20px) !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+  }
+  #cooking-step-text {
+    min-height: 180px;
+    max-height: 46dvh;
+    padding: 18px;
+    font-size: 1.22rem;
+  }
+  .cooking-controls {
+    position: static;
+    padding-bottom: 0;
+  }
+  .cooking-controls .btn {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+  }
   .cooking-timer-overlay {
     left: 8px;
     right: unset;
@@ -1241,11 +1307,12 @@
 }
 .cooking-controls .btn {
   font-size: 0.95rem;
-  padding: 12px 26px;
+  padding: 12px 22px;
   border: var(--border-thin);
   color: var(--color-text);
   background: transparent;
-  border-radius: 999px;
+  border-radius: 12px;
+  min-height: 42px;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .cooking-controls .btn:hover {

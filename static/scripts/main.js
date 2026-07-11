@@ -179,6 +179,10 @@ function getUserHeaders(isJson = false) {
   const headers = {
     Accept: 'application/json'
   };
+  const currentUser = getCurrentUserName();
+  if (currentUser) {
+    headers['X-User'] = currentUser;
+  }
   if (isJson) headers['Content-Type'] = 'application/json';
   return headers;
 }
@@ -222,7 +226,15 @@ const knownUsersContainer = document.getElementById('known-users');
 async function refreshAuthStatus() {
   try {
     const res = await apiFetch('/api/auth/status');
-    if (!res.ok) return false;
+    if (!res.ok) {
+      const storedUser = getStoredSessionUser();
+      if (storedUser) {
+        setCurrentUser(storedUser);
+        showAuthModalState();
+        return true;
+      }
+      return false;
+    }
     const data = await res.json();
     const username = (data && data.user) ? String(data.user).trim() : '';
     if (username) {
@@ -230,6 +242,14 @@ async function refreshAuthStatus() {
       showAuthModalState();
       return true;
     }
+
+    const storedUser = getStoredSessionUser();
+    if (storedUser) {
+      setCurrentUser(storedUser);
+      showAuthModalState();
+      return true;
+    }
+
     setCurrentUser('');
     showAuthModalState();
     return false;
@@ -2238,6 +2258,11 @@ if (sidebarToggle && sidebar) {
 const sidebarBackdrop = document.getElementById('sidebar-backdrop');
 if (sidebarBackdrop) {
   sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+}
+
+const sidebarClose = document.getElementById('btn-close-sidebar');
+if (sidebarClose) {
+  sidebarClose.addEventListener('click', closeMobileSidebar);
 }
 
 if (sidebar) {

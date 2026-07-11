@@ -19,8 +19,12 @@
     
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar" role="navigation" aria-label="Hoofdmenu">
-      <div class="brand" id="brand-home" onclick="clearSearchAndGoHome()">
-        <span class="brand-text">HTMeal</span>
+      <div class="sidebar-header">
+        <div class="brand" id="brand-home" onclick="clearSearchAndGoHome()" title="Ga terug naar home" aria-label="Ga terug naar home">
+          <span class="brand-text">HTMeal</span>
+          <span class="brand-home-label">Home</span>
+        </div>
+        <button id="btn-close-sidebar" class="btn-close sidebar-close" type="button" aria-label="Sluit menu">&times;</button>
       </div>
       
       <div class="nav-section">
@@ -52,7 +56,7 @@
       <div class="top-bar">
         <button id="btn-toggle-sidebar" class="btn sidebar-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="sidebar">☰</button>
         <input id="search-input" class="search-input" type="search" placeholder="Zoek op ingrediënt, tag of sfeer..." aria-label="Zoek recepten">
-        <div style="display:flex; align-items:center; gap:0.75rem;">
+        <div class="top-bar-user-actions" style="display:flex; align-items:center; gap:0.75rem;">
           <span id="current-user-badge" style="font-size:0.95rem; color: var(--color-text-muted);">Geen gebruiker geselecteerd</span>
           <button id="btn-change-user" class="btn" type="button" style="white-space: nowrap;">Beheer account</button>
         </div>
@@ -175,7 +179,7 @@
         <div class="editor-field">
           <label class="label">Foto's</label>
           <div class="image-upload-panel">
-            <button type="button" class="btn btn-secondary" id="btn-add-photo">+ Voeg foto toe</button>
+            <button type="button" class="btn btn-secondary" id="btn-add-photo">📷 Filmrol / Camera</button>
             <input type="file" id="edit-image-file" accept="image/*" capture="environment" multiple style="display:none">
             <input type="hidden" id="edit-images">
           </div>
@@ -228,7 +232,7 @@
         
         <div style="margin-top: var(--space-4); display: flex; justify-content: space-between; align-items: center; border-top: var(--border-thin); padding-top: var(--space-4);">
           <button id="btn-delete-recipe" style="border:none; background:transparent; font-family:var(--font-sans); font-weight:700; color: var(--color-accent); cursor:pointer; text-decoration:underline;">Verwijder Recept</button>
-          <button class="btn btn-primary" id="btn-save-recipe" style="font-size: 1.2rem; padding: 12px 32px;">Sla Recept op</button>
+          <button class="btn btn-primary" id="btn-save-recipe">Sla Recept op</button>
         </div>
       </div>
     </div>
@@ -370,7 +374,7 @@
           <label for="memory-save-to-cookbook">Voeg dit recept ook toe aan mijn algemene HTMeal</label>
         </div>
 
-        <button class="btn btn-primary" id="btn-save-memory" style="font-size: 1.2rem; padding: 16px; width: 100%; margin-bottom: 32px;">Opslaan in Logboek</button>
+        <button class="btn btn-primary" id="btn-save-memory" style="width: 100%; margin-bottom: 32px;">Opslaan in Logboek</button>
       </form>
       </div>
     </div>
@@ -420,8 +424,8 @@
     </div>
   </div>
 
-  <script src="/node_modules/d3/dist/d3.min.js"></script>
-  <script src="/node_modules/topojson-client/dist/topojson-client.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
   <script src="scripts/main.js"></script>
   <script src="scripts/world.js"></script>
   <div class="cursor-container">
