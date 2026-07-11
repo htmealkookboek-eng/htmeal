@@ -629,7 +629,8 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 if existing is None:
                     send_json(404, {'error': 'Recipe not found'})
                     return
-                if existing.get('owner') and existing.get('owner') != user:
+                existing_owner = str(existing.get('owner') or '').strip()
+                if not existing_owner or existing_owner != user:
                     send_json(401, {'error': 'Not authorized'})
                     return
                 # remove the recipe and try to cleanup any local image files referenced
@@ -670,10 +671,11 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             is_new_recipe = existing_idx < 0
             if existing_idx >= 0:
                 existing = recipes_data[existing_idx]
-                if existing.get('owner') and existing.get('owner') != user:
+                existing_owner = str(existing.get('owner') or '').strip()
+                if not existing_owner or existing_owner != user:
                     send_json(401, {'error': 'Not authorized'})
                     return
-                new_recipe['owner'] = existing.get('owner', user)
+                new_recipe['owner'] = existing_owner
                 if 'favorited_by' not in new_recipe:
                     new_recipe['favorited_by'] = existing.get('favorited_by', [])
             else:

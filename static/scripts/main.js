@@ -1498,7 +1498,11 @@ window.onCollectionTagClick = function(event, tag) {
 
 // --- RECIPE VIEW ---
 function canEditRecipe(recipe) {
-  return !!recipe;
+  if (!recipe) return false;
+  const currentUser = getCurrentUserName();
+  const owner = recipe.owner ? String(recipe.owner).trim() : '';
+  if (!currentUser || !owner) return false;
+  return currentUser.toLowerCase() === owner.toLowerCase();
 }
 
 function animateRecipeTransition(callback) {
