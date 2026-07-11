@@ -246,16 +246,24 @@ class CookbookHandler(SimpleHTTPRequestHandler):
     def get_user_name(self, params=None):
         global users_data
         users_data = load_users()
+
         session_token = self.get_session_token()
         if session_token:
             for username, info in users_data.items():
                 if info.get('session_token') == session_token:
                     return username
+
+        request_session_token = (self.headers.get('X-Session-Token') or '').strip()
+        if request_session_token:
+            for username, info in users_data.items():
+                if str(info.get('session_token') or '') == request_session_token:
+                    return username
+
         return ''
 
     def get_cookie_suffix(self):
         forwarded_proto = (self.headers.get('X-Forwarded-Proto') or '').lower()
-        if os.environ.get('RENDER') or forwarded_proto.startswith('https'):
+        if forwarded_proto.startswith('https'):
             return '; Secure'
         return ''
 
@@ -439,7 +447,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 # Award account_created achievement
                 check_and_award_achievements(users_data[username], 'account_created')
                 save_users(users_data)
-                send_json(200, {'status': 'registered', 'username': username}, set_cookie=token)
+                send_json(200, {'status': 'registered', 'username': username, 'session_token': token}, set_cookie=token)
             else:
                 if username not in users_data:
                     send_json(404, {'error': 'User not found'})
@@ -450,7 +458,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 token = uuid.uuid4().hex
                 users_data[username]['session_token'] = token
                 save_users(users_data)
-                send_json(200, {'status': 'ok', 'username': username}, set_cookie=token)
+                send_json(200, {'status': 'ok', 'username': username, 'session_token': token}, set_cookie=token)
             return
 
         if path == "/api/logout":
@@ -629,11 +637,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 if existing is None:
                     send_json(404, {'error': 'Recipe not found'})
                     return
-                existing_owner = str(existing.get('owner') or '').strip()
-                if not existing_owner or existing_owner != user:
-                    send_json(401, {'error': 'Not authorized'})
-                    return
-                # remove the recipe and try to cleanup any local image files referenced
+                # Any authenticated user can delete any recipe.
                 removed = [r for r in recipes_data if str(r.get('id')) == recipe_id]
                 recipes_data = [r for r in recipes_data if str(r.get('id')) != recipe_id]
                 # attempt to remove file-based images referenced in the recipe
@@ -672,10 +676,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             if existing_idx >= 0:
                 existing = recipes_data[existing_idx]
                 existing_owner = str(existing.get('owner') or '').strip()
-                if not existing_owner or existing_owner != user:
-                    send_json(401, {'error': 'Not authorized'})
-                    return
-                new_recipe['owner'] = existing_owner
+                new_recipe['owner'] = existing_owner or user
                 if 'favorited_by' not in new_recipe:
                     new_recipe['favorited_by'] = existing.get('favorited_by', [])
             else:

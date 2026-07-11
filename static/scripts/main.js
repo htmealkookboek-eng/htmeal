@@ -88,6 +88,7 @@ let currentRecipeRenderList = [];
 let recipeAutoLoading = false;
 
 const USERNAME_PATTERN = /^[A-Za-zÀ-ÿ0-9 _.-]{3,30}$/;
+const SESSION_TOKEN_STORAGE_KEY = 'htmeal_session_token';
 const AppState = {
   currentUser: '',
   apiCache: { recipesByQuery: {}, collections: null },
@@ -106,6 +107,13 @@ function getStoredSessionUser() {
     return '';
   }
 }
+function getStoredSessionToken() {
+  try {
+    return localStorage.getItem(SESSION_TOKEN_STORAGE_KEY) || '';
+  } catch (error) {
+    return '';
+  }
+}
 function saveStoredSessionUser(name) {
   try {
     if (name) {
@@ -117,8 +125,19 @@ function saveStoredSessionUser(name) {
     console.warn('Kon sessie niet bewaren', error);
   }
 }
+function saveStoredSessionToken(token) {
+  try {
+    if (token) {
+      localStorage.setItem(SESSION_TOKEN_STORAGE_KEY, token);
+    } else {
+      localStorage.removeItem(SESSION_TOKEN_STORAGE_KEY);
+    }
+  } catch (error) {
+    console.warn('Kon sessietoken niet bewaren', error);
+  }
+}
 function getCurrentUserName() {
-  return AppState.currentUser || getStoredSessionUser();
+  return AppState.currentUser || '';
 }
 function getKnownUsers() {
   try {
@@ -167,6 +186,7 @@ function setCurrentUser(name) {
   if (!normalized || !isValidUsername(normalized)) {
     AppState.currentUser = '';
     saveStoredSessionUser('');
+    saveStoredSessionToken('');
     updateUserDisplay();
     return false;
   }
@@ -180,8 +200,12 @@ function getUserHeaders(isJson = false) {
     Accept: 'application/json'
   };
   const currentUser = getCurrentUserName();
+  const sessionToken = getStoredSessionToken();
   if (currentUser) {
     headers['X-User'] = currentUser;
+  }
+  if (sessionToken) {
+    headers['X-Session-Token'] = sessionToken;
   }
   if (isJson) headers['Content-Type'] = 'application/json';
   return headers;
@@ -227,14 +251,12 @@ async function refreshAuthStatus() {
   try {
     const res = await apiFetch('/api/auth/status');
     if (!res.ok) {
-      const storedUser = getStoredSessionUser();
-      if (storedUser) {
-        setCurrentUser(storedUser);
-        showAuthModalState();
-        return true;
-      }
+      setCurrentUser('');
+      saveStoredSessionToken('');
+      showAuthModalState();
       return false;
     }
+
     const data = await res.json();
     const username = (data && data.user) ? String(data.user).trim() : '';
     if (username) {
@@ -243,14 +265,8 @@ async function refreshAuthStatus() {
       return true;
     }
 
-    const storedUser = getStoredSessionUser();
-    if (storedUser) {
-      setCurrentUser(storedUser);
-      showAuthModalState();
-      return true;
-    }
-
     setCurrentUser('');
+    saveStoredSessionToken('');
     showAuthModalState();
     return false;
   } catch (error) {
@@ -423,6 +439,7 @@ if (loginForm) {
       if (error) error.textContent = '';
       const loggedInUser = (data && data.username) ? String(data.username).trim() : username;
       setCurrentUser(loggedInUser);
+      saveStoredSessionToken(data && data.session_token ? String(data.session_token).trim() : '');
       addKnownUser(loggedInUser);
       showAuthModalState();
       closeManagedModal(loginModal);
@@ -1499,10 +1516,7 @@ window.onCollectionTagClick = function(event, tag) {
 // --- RECIPE VIEW ---
 function canEditRecipe(recipe) {
   if (!recipe) return false;
-  const currentUser = getCurrentUserName();
-  const owner = recipe.owner ? String(recipe.owner).trim() : '';
-  if (!currentUser || !owner) return false;
-  return currentUser.toLowerCase() === owner.toLowerCase();
+  return !!getCurrentUserName();
 }
 
 function animateRecipeTransition(callback) {
@@ -1576,7 +1590,7 @@ function openRecipeView(recipe) {
       </div>
       <div style="display:flex; gap: 8px; align-items:center; flex-wrap:wrap;">
         <button onclick="printRecipe(currentViewRecipe)" class="btn" type="button" title="Print dit recept">Afdrukken</button>
-        ${canEdit ? `<button onclick="editCurrentRecipe()" class="btn btn-primary">Bewerk recept</button>` : `<span style="font-size:0.95rem; color: var(--color-text-muted);">Alleen bewerkbaar door eigenaar</span>`}
+        ${canEdit ? `<button onclick="editCurrentRecipe()" class="btn btn-primary">Bewerk recept</button>` : `<span style="font-size:0.95rem; color: var(--color-text-muted);">Log in om dit recept te bewerken</span>`}
       </div>
     </div>
   `;
@@ -2792,6 +2806,7 @@ async function logout() {
     console.warn('Logout failed', e);
   }
   setCurrentUser('');
+  saveStoredSessionToken('');
   AppState.apiCache.recipesByQuery = {};
   AppState.apiCache.collections = null;
   fetchRecipes(AppState.lastRecipeQuery);
