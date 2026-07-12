@@ -4,27 +4,67 @@ import pathlib
 import sqlite3
 import uuid
 from datetime import datetime
+import re
+
+try:
+    import psycopg2
+    from psycopg2.extras import RealDictCursor
+except ImportError:
+    psycopg2 = None
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "data" / "cookbook.db"
 RECIPES_JSON = BASE_DIR / "data" / "recipes.json"
 USERS_JSON = BASE_DIR / "data" / "users.json"
 WORLD_JOURNEY_JSON = BASE_DIR / "data" / "world_journey.json"
+DB_URL = os.environ.get("DATABASE_URL")
 
 ALLOWED_IMAGE_MIME = {'image/jpeg', 'image/jpg', 'image/png', 'image/webp'}
 
 def get_connection():
-    os.makedirs(DB_PATH.parent, exist_ok=True)
-    conn = sqlite3.connect(str(DB_PATH), timeout=30, check_same_thread=False)
-    conn.row_factory = sqlite3.Row
-    return conn
+    if DB_URL:
+        if not psycopg2:
+            raise RuntimeError("psycopg2-binary is not installed but DATABASE_URL is set")
+        conn = psycopg2.connect(DB_URL, cursor_factory=RealDictCursor)
+        return conn
+    else:
+        os.makedirs(DB_PATH.parent, exist_ok=True)
+        conn = sqlite3.connect(str(DB_PATH), timeout=30, check_same_thread=False)
+        conn.row_factory = sqlite3.Row
+        return conn
 
+def execute_query(conn, query, params=None):
+    if params is None:
+        params = ()
+        
+    is_pg = bool(DB_URL)
+    
+    if is_pg:
+        query = query.replace('?', '%s')
+        
+        # Replace :name with %(name)s using regex but safely
+        def replace_named_param(match):
+            return '%(' + match.group(1) + ')s'
+        query = re.sub(r':([a-zA-Z_]\w*)', replace_named_param, query)
+        
+        if 'INSERT OR REPLACE INTO users' in query:
+            query = query.replace('INSERT OR REPLACE INTO users', 'INSERT INTO users')
+            query += " ON CONFLICT (username) DO UPDATE SET password=EXCLUDED.password, session_token=EXCLUDED.session_token, csrf_token=EXCLUDED.csrf_token, created_at=EXCLUDED.created_at, is_admin=EXCLUDED.is_admin, meta=EXCLUDED.meta"
+        elif 'INSERT OR REPLACE INTO recipes' in query:
+            query = query.replace('INSERT OR REPLACE INTO recipes', 'INSERT INTO recipes')
+            query += " ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, description=EXCLUDED.description, source=EXCLUDED.source, owner=EXCLUDED.owner, image=EXCLUDED.image, extra_image=EXCLUDED.extra_image, images=EXCLUDED.images, extra_images=EXCLUDED.extra_images, tags=EXCLUDED.tags, ingredients=EXCLUDED.ingredients, instructions=EXCLUDED.instructions, notes=EXCLUDED.notes, favorited_by=EXCLUDED.favorited_by, servings=EXCLUDED.servings, cooking_time=EXCLUDED.cooking_time, created_at=EXCLUDED.created_at, updated_at=EXCLUDED.updated_at, meta=EXCLUDED.meta"
+        elif 'INSERT OR REPLACE INTO world_journey' in query:
+            query = query.replace('INSERT OR REPLACE INTO world_journey', 'INSERT INTO world_journey')
+            query += " ON CONFLICT (id) DO UPDATE SET owner=EXCLUDED.owner, data=EXCLUDED.data, created_at=EXCLUDED.created_at, updated_at=EXCLUDED.updated_at"
+                
+    cur = conn.cursor()
+    cur.execute(query, params)
+    return cur
 
 def _to_json(value):
     if value is None:
         return None
     return json.dumps(value, ensure_ascii=False)
-
 
 def _from_json(value, default):
     if not value:
@@ -34,11 +74,10 @@ def _from_json(value, default):
     except Exception:
         return default
 
-
 def init_db():
     conn = get_connection()
     with conn:
-        conn.execute(
+        execute_query(conn,
             """
             CREATE TABLE IF NOT EXISTS users (
                 username TEXT PRIMARY KEY,
@@ -51,7 +90,7 @@ def init_db():
             )
             """
         )
-        conn.execute(
+        execute_query(conn,
             """
             CREATE TABLE IF NOT EXISTS recipes (
                 id TEXT PRIMARY KEY,
@@ -76,10 +115,10 @@ def init_db():
             )
             """
         )
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_recipes_owner ON recipes(owner)")
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_recipes_title ON recipes(title)")
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_recipes_tags ON recipes(tags)")
-        conn.execute(
+        execute_query(conn, "CREATE INDEX IF NOT EXISTS idx_recipes_owner ON recipes(owner)")
+        execute_query(conn, "CREATE INDEX IF NOT EXISTS idx_recipes_title ON recipes(title)")
+        execute_query(conn, "CREATE INDEX IF NOT EXISTS idx_recipes_tags ON recipes(tags)")
+        execute_query(conn,
             """
             CREATE TABLE IF NOT EXISTS world_journey (
                 id TEXT PRIMARY KEY,
@@ -92,12 +131,10 @@ def init_db():
         )
     conn.close()
 
-
 def _row_to_dict(row):
     if row is None:
         return None
     return dict(row)
-
 
 def _recipe_from_row(row):
     if row is None:
@@ -113,7 +150,6 @@ def _recipe_from_row(row):
     recipe['meta'] = _from_json(recipe.get('meta'), {})
     return recipe
 
-
 def _user_from_row(row):
     if row is None:
         return None
@@ -122,14 +158,12 @@ def _user_from_row(row):
     user['meta'] = _from_json(user.get('meta'), {})
     return user
 
-
 def _journey_from_row(row):
     if row is None:
         return None
     journey = dict(row)
     journey['data'] = _from_json(journey.get('data'), {})
     return journey
-
 
 def migrate_from_json():
     init_db()
@@ -169,34 +203,31 @@ def migrate_from_json():
                 pass
     conn.close()
 
-
 def ensure_db():
-    if not DB_PATH.exists():
+    if not DB_PATH.exists() and not DB_URL:
         migrate_from_json()
     else:
         init_db()
 
-
 def get_all_recipes():
     conn = get_connection()
-    cur = conn.execute("SELECT * FROM recipes")
+    cur = execute_query(conn, "SELECT * FROM recipes")
     rows = [ _recipe_from_row(row) for row in cur.fetchall() ]
     conn.close()
     return rows
 
-
 def get_recipe(recipe_id):
     conn = get_connection()
-    cur = conn.execute("SELECT * FROM recipes WHERE id = ?", (str(recipe_id),))
-    recipe = _recipe_from_row(cur.fetchone())
+    cur = execute_query(conn, "SELECT * FROM recipes WHERE id = ?", (str(recipe_id),))
+    row = cur.fetchone()
+    recipe = _recipe_from_row(row) if row else None
     conn.close()
     return recipe
-
 
 def search_recipes(query):
     query_text = f"%{query.lower()}%"
     conn = get_connection()
-    cur = conn.execute(
+    cur = execute_query(conn, 
         "SELECT * FROM recipes WHERE lower(title) LIKE ? OR lower(description) LIKE ? OR lower(source) LIKE ? OR lower(tags) LIKE ? OR lower(ingredients) LIKE ? OR lower(instructions) LIKE ?",
         (query_text, query_text, query_text, query_text, query_text, query_text)
     )
@@ -204,15 +235,13 @@ def search_recipes(query):
     conn.close()
     return rows
 
-
 def get_favorites(owner):
     conn = get_connection()
     pattern = f"%\"{owner}\"%"
-    cur = conn.execute("SELECT * FROM recipes WHERE favorited_by LIKE ?", (pattern,))
+    cur = execute_query(conn, "SELECT * FROM recipes WHERE favorited_by LIKE ?", (pattern,))
     rows = [ _recipe_from_row(row) for row in cur.fetchall() ]
     conn.close()
     return rows
-
 
 def save_recipe(recipe, connection=None):
     now = datetime.utcnow().isoformat()
@@ -239,7 +268,7 @@ def save_recipe(recipe, connection=None):
     }
     conn = connection or get_connection()
     with conn:
-        conn.execute(
+        execute_query(conn, 
             """
             INSERT OR REPLACE INTO recipes (
                 id, title, description, source, owner, image, extra_image,
@@ -257,31 +286,29 @@ def save_recipe(recipe, connection=None):
         conn.close()
     return get_recipe(data['id'])
 
-
 def delete_recipe(recipe_id, connection=None):
     conn = connection or get_connection()
     with conn:
-        conn.execute("DELETE FROM recipes WHERE id = ?", (str(recipe_id),))
+        execute_query(conn, "DELETE FROM recipes WHERE id = ?", (str(recipe_id),))
     if connection is None:
         conn.close()
     return True
 
-
 def get_user(username):
     conn = get_connection()
-    cur = conn.execute("SELECT * FROM users WHERE username = ?", (username,))
-    user = _user_from_row(cur.fetchone())
+    cur = execute_query(conn, "SELECT * FROM users WHERE username = ?", (username,))
+    row = cur.fetchone()
+    user = _user_from_row(row) if row else None
     conn.close()
     return user
 
-
 def get_all_users():
     conn = get_connection()
-    rows = conn.execute("SELECT * FROM users").fetchall()
+    cur = execute_query(conn, "SELECT * FROM users")
+    rows = cur.fetchall()
     users = { row['username']: _user_from_row(row) for row in rows }
     conn.close()
     return users
-
 
 def save_user(user, connection=None):
     data = {
@@ -295,7 +322,7 @@ def save_user(user, connection=None):
     }
     conn = connection or get_connection()
     with conn:
-        conn.execute(
+        execute_query(conn, 
             """
             INSERT OR REPLACE INTO users (
                 username, password, session_token, csrf_token, created_at, is_admin, meta
@@ -309,36 +336,33 @@ def save_user(user, connection=None):
         conn.close()
     return get_user(data['username'])
 
-
 def delete_user(username, connection=None):
     conn = connection or get_connection()
     with conn:
-        conn.execute("DELETE FROM users WHERE username = ?", (username,))
+        execute_query(conn, "DELETE FROM users WHERE username = ?", (username,))
     if connection is None:
         conn.close()
     return True
 
-
 def get_journey_entries(owner=None, all_entries=False):
     conn = get_connection()
     if all_entries:
-        cur = conn.execute("SELECT * FROM world_journey")
+        cur = execute_query(conn, "SELECT * FROM world_journey")
     elif owner is None:
-        cur = conn.execute("SELECT * FROM world_journey WHERE owner = '' OR owner IS NULL")
+        cur = execute_query(conn, "SELECT * FROM world_journey WHERE owner = '' OR owner IS NULL")
     else:
-        cur = conn.execute("SELECT * FROM world_journey WHERE owner = ?", (owner,))
+        cur = execute_query(conn, "SELECT * FROM world_journey WHERE owner = ?", (owner,))
     entries = [ _journey_from_row(row) for row in cur.fetchall() ]
     conn.close()
     return entries
 
-
 def get_journey_entry(entry_id):
     conn = get_connection()
-    cur = conn.execute("SELECT * FROM world_journey WHERE id = ?", (str(entry_id),))
-    entry = _journey_from_row(cur.fetchone())
+    cur = execute_query(conn, "SELECT * FROM world_journey WHERE id = ?", (str(entry_id),))
+    row = cur.fetchone()
+    entry = _journey_from_row(row) if row else None
     conn.close()
     return entry
-
 
 def save_journey_entry(entry, connection=None):
     now = datetime.utcnow().isoformat()
@@ -351,7 +375,7 @@ def save_journey_entry(entry, connection=None):
     }
     conn = connection or get_connection()
     with conn:
-        conn.execute(
+        execute_query(conn, 
             """
             INSERT OR REPLACE INTO world_journey (
                 id, owner, data, created_at, updated_at
@@ -363,14 +387,12 @@ def save_journey_entry(entry, connection=None):
         )
     if connection is None:
         conn.close()
-    saved = get_journey_entry(data['id'])
-    return saved
-
+    return get_journey_entry(data['id'])
 
 def delete_journey_entry(entry_id, connection=None):
     conn = connection or get_connection()
     with conn:
-        conn.execute("DELETE FROM world_journey WHERE id = ?", (str(entry_id),))
+        execute_query(conn, "DELETE FROM world_journey WHERE id = ?", (str(entry_id),))
     if connection is None:
         conn.close()
     return True
