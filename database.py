@@ -9,8 +9,10 @@ import re
 try:
     import psycopg2
     from psycopg2.extras import RealDictCursor
-except ImportError:
+    psycopg2_err = None
+except ImportError as e:
     psycopg2 = None
+    psycopg2_err = str(e)
 
 BASE_DIR = pathlib.Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "data" / "cookbook.db"
@@ -24,7 +26,7 @@ ALLOWED_IMAGE_MIME = {'image/jpeg', 'image/jpg', 'image/png', 'image/webp'}
 def get_connection():
     if DB_URL:
         if not psycopg2:
-            raise RuntimeError("psycopg2-binary is not installed but DATABASE_URL is set")
+            raise RuntimeError(f"psycopg2-binary is not installed but DATABASE_URL is set. Import Error: {psycopg2_err}")
         conn = psycopg2.connect(DB_URL, cursor_factory=RealDictCursor)
         return conn
     else:
