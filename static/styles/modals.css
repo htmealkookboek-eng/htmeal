@@ -551,10 +551,11 @@
 }
 
 #recipe-view-modal .recipe-gallery-image img {
-  min-width: 100%;
-  min-height: 100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center center;
+  display: block;
 }
 
 /* Scroll-snap fallback for gallery: when supported, enable native horizontal scrolling */

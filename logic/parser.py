@@ -380,20 +380,25 @@ def clean_instagram_caption(text):
 
 
 def extract_instagram_image(html_text):
-    candidates = [
-        r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"',
-        r'<meta[^>]+property="og:image:secure_url"[^>]+content="([^"]+)"',
-        r'<meta[^>]+property="og:video"[^>]+content="([^"]+)"',
-        r'<meta[^>]+property="og:video:secure_url"[^>]+content="([^"]+)"',
+    # Prefer the actual poster image for Instagram video posts. The generic og:image
+    # metadata often points to a play-button thumbnail, which is the wrong visual for
+    # the recipe card/banner.
+    poster_patterns = [
         r'<video[^>]+poster="([^"]+)"',
+        r'<meta[^>]+property="og:image:secure_url"[^>]+content="([^"]+)"',
+        r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"',
+        r'<meta[^>]+property="og:video:secure_url"[^>]+content="([^"]+)"',
+        r'<meta[^>]+property="og:video"[^>]+content="([^"]+)"',
         r'<video[^>]+src="([^"]+)"',
         r'<source[^>]+src="([^"]+)"',
         r'<img[^>]+src="([^"]+)"'
     ]
-    for pattern in candidates:
+    for pattern in poster_patterns:
         match = re.search(pattern, html_text, re.IGNORECASE)
         if match:
-            return html.unescape(match.group(1))
+            candidate = html.unescape(match.group(1)).strip()
+            if candidate:
+                return candidate
     return ''
 
 

@@ -95,6 +95,13 @@ const AppState = {
   lastRecipeQuery: '',
   searchDebounceTimer: null
 };
+
+function clearRecipeCaches() {
+  AppState.apiCache.recipesByQuery = {};
+  AppState.apiCache.collections = null;
+  recipeCacheOrder.length = 0;
+}
+
 function isValidUsername(name) {
   const normalized = String(name || '').trim();
   return USERNAME_PATTERN.test(normalized);
@@ -191,11 +198,13 @@ function setCurrentUser(name) {
     AppState.currentUser = '';
     saveStoredSessionUser('');
     saveStoredSessionToken('');
+    clearRecipeCaches();
     updateUserDisplay();
     return false;
   }
   AppState.currentUser = normalized;
   saveStoredSessionUser(normalized);
+  clearRecipeCaches();
   updateUserDisplay();
   return true;
 }
@@ -218,6 +227,7 @@ function getUserHeaders(isJson = false) {
 async function apiFetch(url, options = {}) {
   const init = {
     credentials: 'same-origin',
+    cache: 'no-store',
     headers: {
       ...getUserHeaders(options.isJson),
       ...options.headers
@@ -298,8 +308,7 @@ function renderKnownUsers() {
     btn.addEventListener('click', () => {
       setCurrentUser(user);
       closeManagedModal(loginModal);
-      AppState.apiCache.recipesByQuery = {};
-      AppState.apiCache.collections = null;
+      clearRecipeCaches();
       fetchRecipes(AppState.lastRecipeQuery);
       fetchCollections(true);
     });
@@ -329,10 +338,9 @@ function renderKnownUsers() {
         saveKnownUsers(list);
         renderKnownUsers();
         // If current user deleted themself, clear state
-        if (getCurrentUserName() === user) {
+          if (getCurrentUserName() === user) {
           setCurrentUser('');
-          AppState.apiCache.recipesByQuery = {};
-          AppState.apiCache.collections = null;
+          clearRecipeCaches();
           fetchRecipes(AppState.lastRecipeQuery);
         }
       } catch (err) {
@@ -447,8 +455,7 @@ if (loginForm) {
       addKnownUser(loggedInUser);
       showAuthModalState();
       closeManagedModal(loginModal);
-      AppState.apiCache.recipesByQuery = {};
-      AppState.apiCache.collections = null;
+      clearRecipeCaches();
       fetchRecipes(AppState.lastRecipeQuery);
       fetchCollections(true);
     } catch (e) {
@@ -2684,8 +2691,7 @@ document.getElementById('btn-delete-recipe').onclick = async () => {
       }
 
       currentRecipes = currentRecipes.filter(recipe => String(recipe.id) !== recipeId);
-      AppState.apiCache.recipesByQuery = {};
-      AppState.apiCache.collections = null;
+      clearRecipeCaches();
       currentViewRecipe = null;
       editorModal.classList.remove('active');
       recipeViewModal.classList.remove('active');
@@ -2768,7 +2774,7 @@ document.getElementById('btn-save-recipe').onclick = async () => {
     return;
   }
   
-  AppState.apiCache.recipesByQuery = {};
+  clearRecipeCaches();
   saveLastRecipeQuery(AppState.lastRecipeQuery);
   await fetchCollections(true);
   editorModal.classList.remove('active');
@@ -2811,8 +2817,7 @@ async function logout() {
   }
   setCurrentUser('');
   saveStoredSessionToken('');
-  AppState.apiCache.recipesByQuery = {};
-  AppState.apiCache.collections = null;
+  clearRecipeCaches();
   fetchRecipes(AppState.lastRecipeQuery);
   fetchCollections(true);
   openLoginModal();
