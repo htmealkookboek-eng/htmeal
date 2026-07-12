@@ -10,4 +10,10 @@ services:
         value: "true"
       - key: PYTHONUNBUFFERED
         value: "1"
+      - key: SUPABASE_URL
+        value: "https://ctrlrgdvuqicwdakhtch.supabase.co"
+      - key: SUPABASE_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
     autoDeploy: true

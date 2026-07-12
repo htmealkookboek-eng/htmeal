@@ -1,4 +1,4 @@
-#htmealkookboek@gmail.com github & Render & Supabase
+#htmealkookboek@gmail.com github & Render
 import pathlib
 import json
 import threading
@@ -37,10 +37,6 @@ from database import (
     delete_journey_entry,
 )
 
-RECIPE_FILE = BASE_DIR / "data" / "recipes.json"
-WORLD_RECIPES_FILE = BASE_DIR / "data" / "world_recipes.json"
-WORLD_JOURNEY_FILE = BASE_DIR / "data" / "world_journey.json"
-USERS_FILE = BASE_DIR / "data" / "users.json"
 
 STATIC_DIR = BASE_DIR / "static"
 LOG_DIR = BASE_DIR / "logs"
@@ -65,9 +61,6 @@ RATE_LIMIT_WINDOW_SECONDS = 60
 AUTH_RATE_LIMIT_PER_IP = 20
 AUTH_RATE_LIMIT_PER_USER = 10
 
-RECIPE_LOCK = threading.Lock()
-USERS_LOCK = threading.Lock()
-WORLD_LOCK = threading.Lock()
 
 
 def is_rate_limited(key, limit=5):
@@ -83,9 +76,73 @@ def is_rate_limited(key, limit=5):
     return False
 
 
-def hash_password(password):
-    return hashlib.sha256(str(password or '').encode('utf-8')).hexdigest()
+def load_recipes(path):
+    return load_json_file(path, RECIPE_LOCK, default=[])
 
+
+def save_recipes(recipes, path=RECIPE_FILE):
+    save_json_file(recipes, path, RECIPE_LOCK)
+
+
+def load_users():
+    if not USERS_FILE.exists():
+        return {}
+    try:
+        with USERS_LOCK:
+            with open(USERS_FILE, 'r', encoding='utf-8') as f:
+                return canonicalize_users(json.load(f))
+    except Exception:
+        return {}
+
+def save_users(users):
+    save_json_file(canonicalize_users(users), USERS_FILE, USERS_LOCK)
+
+
+def canonicalize_users(users):
+    if not isinstance(users, dict):
+        return {}
+    canonicalized = {}
+    for stored_username, info in users.items():
+        normalized_name = normalize_username(stored_username)
+        if not normalized_name:
+            continue
+        lookup_key = get_username_lookup_key(normalized_name)
+        existing_key = next((name for name in canonicalized if get_username_lookup_key(name) == lookup_key), '')
+        if existing_key:
+            merged_info = dict(canonicalized[existing_key] or {})
+            merged_info.update(info or {})
+            canonicalized[existing_key] = merged_info
+        else:
+            canonicalized[normalized_name] = dict(info or {})
+    return canonicalized
+
+
+def load_json_file(path, lock, default=None):
+    if default is None:
+        default = []
+    if not path.exists():
+        return default
+    with lock:
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            return default
+
+
+def save_json_file(data, path, lock):
+    tmp = pathlib.Path(str(path) + '.tmp')
+    with lock:
+        with open(tmp, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+        try:
+            os.replace(str(tmp), str(path))
+        except Exception:
+            tmp.rename(path)
+
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
 
 def verify_password(password, hashed):
     return hash_password(password) == hashed

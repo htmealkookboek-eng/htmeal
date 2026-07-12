@@ -18,12 +18,14 @@ WORLD_JOURNEY_JSON = BASE_DIR / "data" / "world_journey.json"
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 
 supabase_client = None
-if SUPABASE_URL and SUPABASE_KEY:
+supabase_key = SUPABASE_SERVICE_ROLE_KEY or SUPABASE_KEY
+if SUPABASE_URL and supabase_key:
     if not create_client:
         raise RuntimeError("supabase package is not installed but SUPABASE_URL is set")
-    supabase_client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    supabase_client = create_client(SUPABASE_URL, supabase_key)
 
 ALLOWED_IMAGE_MIME = {'image/jpeg', 'image/jpg', 'image/png', 'image/webp'}
 
@@ -178,7 +180,18 @@ def migrate_from_json():
         conn.close()
 
 def ensure_db():
-    if not DB_PATH.exists() and not supabase_client:
+    if supabase_client:
+        try:
+            remote_users = get_all_users()
+            remote_recipes = get_all_recipes()
+            remote_journey = get_journey_entries()
+            if not remote_users and not remote_recipes and not remote_journey:
+                migrate_from_json()
+        except Exception:
+            pass
+        return
+
+    if not DB_PATH.exists():
         migrate_from_json()
     else:
         init_db()
