@@ -37,10 +37,7 @@ from database import (
     delete_journey_entry,
 )
 
-RECIPE_FILE = BASE_DIR / "data" / "recipes.json"
-WORLD_RECIPES_FILE = BASE_DIR / "data" / "world_recipes.json"
-WORLD_JOURNEY_FILE = BASE_DIR / "data" / "world_journey.json"
-USERS_FILE = BASE_DIR / "data" / "users.json"
+
 STATIC_DIR = BASE_DIR / "static"
 LOG_DIR = BASE_DIR / "logs"
 LOG_FILE = LOG_DIR / "cookbook.log"
@@ -64,10 +61,7 @@ RATE_LIMIT_WINDOW_SECONDS = 60
 AUTH_RATE_LIMIT_PER_IP = 20
 AUTH_RATE_LIMIT_PER_USER = 10
 
-# File locks to protect concurrent access
-RECIPE_LOCK = threading.Lock()
-USERS_LOCK = threading.Lock()
-WORLD_LOCK = threading.Lock()
+
 
 def is_rate_limited(key, limit=5):
     now = datetime.now().timestamp()
@@ -279,21 +273,13 @@ class CookbookHandler(SimpleHTTPRequestHandler):
         return cookies.get('session', '')
 
     def get_user_name(self, params=None):
-        global users_data
-        users_data = load_users()
-
         session_token = self.get_session_token()
+        if not session_token:
+            session_token = (self.headers.get('X-Session-Token') or '').strip()
         if session_token:
-            for username, info in users_data.items():
+            for username, info in get_all_users().items():
                 if info.get('session_token') == session_token:
                     return username
-
-        request_session_token = (self.headers.get('X-Session-Token') or '').strip()
-        if request_session_token:
-            for username, info in users_data.items():
-                if str(info.get('session_token') or '') == request_session_token:
-                    return username
-
         return ''
 
     def get_cookie_suffix(self):
@@ -337,9 +323,9 @@ class CookbookHandler(SimpleHTTPRequestHandler):
         if path == "/api/recipes":
             q = params.get("q", [""])[0]
             if q:
-                results = search_mgr.search(q) if hasattr(search_mgr, 'search') else recipes_data
+                results = search_recipes(q)
             else:
-                results = recipes_data
+                results = get_all_recipes()
             self.wfile.write(json.dumps(results).encode("utf-8"))
             
         elif path == "/api/world_recipes":
@@ -350,44 +336,27 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(b"[]")
                 
         elif path == "/api/world_journey":
-            try:
-                with open(WORLD_JOURNEY_FILE, 'r', encoding='utf-8') as f:
-                    journey = json.load(f)
-            except Exception:
-                journey = []
             owner = params.get("owner", [""])[0].strip()
             user = self.get_user_name(params)
             if owner == "all":
-                visible_journey = journey
+                visible_journey = get_journey_entries(all_entries=True)
             elif owner:
-                if owner == user:
-                    visible_journey = [entry for entry in journey if str(entry.get("owner", "")).strip() == user]
-                else:
-                    visible_journey = [entry for entry in journey if str(entry.get("owner", "")).strip() == owner]
+                visible_journey = get_journey_entries(owner=owner)
             else:
-                if user:
-                    visible_journey = [entry for entry in journey if str(entry.get("owner", "")).strip() == user]
-                else:
-                    visible_journey = [entry for entry in journey if not entry.get("owner")]
+                visible_journey = get_journey_entries(owner=user) if user else get_journey_entries()
             self.wfile.write(json.dumps(visible_journey).encode("utf-8"))
         elif path == "/api/auth/status":
             user = self.get_user_name(params)
             self.wfile.write(json.dumps({"user": user}).encode("utf-8"))
         elif path == "/api/favorites":
-            # Return recipes favorited by the authenticated user only.
-            try:
-                all_recipes = load_recipes(RECIPE_FILE)
-            except Exception:
-                all_recipes = []
             owner = self.get_user_name(params)
             if not owner:
                 self.wfile.write(json.dumps([]).encode("utf-8"))
                 return
-            favs = [r for r in all_recipes if isinstance(r.get('favorited_by'), list) and owner in r.get('favorited_by')]
-            self.wfile.write(json.dumps(favs).encode("utf-8"))
+            self.wfile.write(json.dumps(get_favorites(owner)).encode("utf-8"))
         
         elif path == "/api/collections":
-            collections = collection_mgr.collection_names() if hasattr(collection_mgr, 'collection_names') else []
+            collections = RecipeCollection(get_all_recipes()).collection_names()
             self.wfile.write(json.dumps(collections).encode("utf-8"))
         elif path == "/api/groentenkalender":
             try:
@@ -401,9 +370,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             if not user:
                 self.wfile.write(json.dumps({"error": "Not logged in"}).encode("utf-8"))
                 return
-            global users_data
-            users_data = load_users()
-            user_data = users_data.get(user, {})
+            user_data = get_user(user) or {}
             achievements = get_all_achievements(user_data)
             stats = get_user_stats(user_data)
             total_achievements = len(ACHIEVEMENTS)
@@ -430,13 +397,8 @@ class CookbookHandler(SimpleHTTPRequestHandler):
         except Exception:
             body = {}
 
-        global users_data, recipes_data, collection_mgr, search_mgr
         params = urllib.parse.parse_qs(parsed.query)
         user = self.get_user_name(params)
-        recipes_data = load_recipes(RECIPE_FILE)
-        if collection_mgr is None or search_mgr is None:
-            collection_mgr = RecipeCollection(recipes_data)
-            search_mgr = RecipeSearch(recipes_data)
         client_ip = self.client_address[0] if hasattr(self, 'client_address') else 'unknown'
         if path == "/api/auth":
             auth_user = normalize_username(body.get('username')) or user
@@ -467,43 +429,43 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             if not username or not password:
                 send_json(400, {'error': 'Username and password required'})
                 return
-            users_data = load_users()
+            existing_user = get_user(username)
             if action == 'register':
-                existing_username = find_username_key(users_data, username)
-                if existing_username:
+                if existing_user:
                     send_json(400, {'error': 'User already exists'})
                     return
                 from logic.achievements import check_and_award_achievements
                 token = uuid.uuid4().hex
-                users_data[username] = {
+                new_user = {
+                    'username': username,
                     'password': hash_password(password),
-                    'created': datetime.now().isoformat(),
-                    'session_token': token
+                    'created_at': datetime.now().isoformat(),
+                    'session_token': token,
+                    'is_admin': 0,
+                    'meta': {}
                 }
-                # Award account_created achievement
-                check_and_award_achievements(users_data[username], 'account_created')
-                save_users(users_data)
+                check_and_award_achievements(new_user, 'account_created')
+                save_user(new_user)
                 send_json(200, {'status': 'registered', 'username': username, 'session_token': token}, set_cookie=token)
             else:
-                existing_username = find_username_key(users_data, username)
-                if not existing_username:
+                if not existing_user:
                     send_json(404, {'error': 'User not found'})
                     return
-                if not verify_password(password, users_data[existing_username].get('password', '')):
+                if not verify_password(password, existing_user.get('password', '')):
                     send_json(401, {'error': 'Invalid password'})
                     return
                 token = uuid.uuid4().hex
-                users_data[existing_username]['session_token'] = token
-                save_users(users_data)
-                send_json(200, {'status': 'ok', 'username': existing_username, 'session_token': token}, set_cookie=token)
+                existing_user['session_token'] = token
+                save_user(existing_user)
+                send_json(200, {'status': 'ok', 'username': existing_user['username'], 'session_token': token}, set_cookie=token)
             return
 
         if path == "/api/logout":
-            if user and user in users_data:
-                users_data = load_users()
-                if users_data.get(user):
-                    users_data[user].pop('session_token', None)
-                    save_users(users_data)
+            if user:
+                u = get_user(user)
+                if u:
+                    u['session_token'] = None
+                    save_user(u)
             send_json(200, {'status': 'ok'}, delete_cookie=True)
             return
 
@@ -526,8 +488,8 @@ class CookbookHandler(SimpleHTTPRequestHandler):
 
             is_admin_user = False
             try:
-                users_data = load_users()
-                if user and users_data.get(user, {}).get('is_admin'):
+                u = get_user(user) if user else None
+                if u and u.get('is_admin'):
                     is_admin_user = True
             except Exception:
                 is_admin_user = False
@@ -541,10 +503,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 return
 
             # collect referenced paths from recipes
-            try:
-                all_recipes = load_recipes(RECIPE_FILE)
-            except Exception:
-                all_recipes = []
+            all_recipes = get_all_recipes()
 
             referenced = set()
             def add_if_local(val):
@@ -608,42 +567,36 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             return
 
         if path == "/api/world_journey":
-            journey = load_json_file(WORLD_JOURNEY_FILE, WORLD_LOCK, default=[])
             if body.get('remove') and body.get('id'):
-                existing_idx = next((i for i, e in enumerate(journey) if str(e.get('id')) == str(body.get('id'))), -1)
-                if existing_idx < 0:
+                existing = get_journey_entry(body.get('id'))
+                if not existing:
                     send_json(404, {'error': 'Entry not found'})
                     return
-                existing = journey[existing_idx]
                 if existing.get('owner') and existing.get('owner') != user:
                     send_json(401, {'error': 'Not authorized'})
                     return
-                journey.pop(existing_idx)
-                save_json_file(journey, WORLD_JOURNEY_FILE, WORLD_LOCK)
+                delete_journey_entry(body.get('id'))
                 send_json(200, {'status': 'removed'})
                 return
             entry = body.get('entry')
             if entry:
-                existing_idx = next((i for i, e in enumerate(journey) if str(e.get('id')) == str(entry.get('id'))), -1)
-                is_new_entry = existing_idx < 0
-                if existing_idx >= 0:
-                    existing = journey[existing_idx]
+                existing = get_journey_entry(entry.get('id'))
+                is_new_entry = existing is None
+                if existing:
                     if existing.get('owner') and existing.get('owner') != user:
                         send_json(401, {'error': 'Not authorized'})
                         return
                     entry['owner'] = existing.get('owner', user)
-                    journey[existing_idx] = entry
                 else:
                     entry['owner'] = user
-                    journey.append(entry)
-                save_json_file(journey, WORLD_JOURNEY_FILE, WORLD_LOCK)
+                save_journey_entry(entry)
                 
-                # Check achievements if new entry
                 awarded_achievements = []
-                if is_new_entry and user in users_data:
+                u = get_user(user)
+                if is_new_entry and u:
                     from logic.achievements import check_and_award_achievements
-                    awarded_achievements = check_and_award_achievements(users_data[user], 'world_journey_entry')
-                    save_users(users_data)
+                    awarded_achievements = check_and_award_achievements(u, 'world_journey_entry')
+                    save_user(u)
                 
                 response_data = {'status': 'success'}
                 if awarded_achievements:
@@ -670,48 +623,18 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 if not recipe_id:
                     send_json(400, {'error': 'Recipe id required'})
                     return
-                existing = next((r for r in recipes_data if str(r.get('id')) == recipe_id), None)
+                existing = get_recipe(recipe_id)
                 if existing is None:
                     send_json(404, {'error': 'Recipe not found'})
                     return
-                # Any authenticated user can delete any recipe.
-                removed = [r for r in recipes_data if str(r.get('id')) == recipe_id]
-                recipes_data = [r for r in recipes_data if str(r.get('id')) != recipe_id]
-                # attempt to remove file-based images referenced in the recipe
-                try:
-                    for r in removed:
-                        for key in ('image', 'extra_image'):
-                            val = r.get(key)
-                            if val and isinstance(val, str) and val.startswith('/') or val.startswith('assets/') or val.startswith('static/'):
-                                try:
-                                    p = (BASE_DIR / val.lstrip('/'))
-                                    if p.exists() and p.is_file():
-                                        p.unlink()
-                                except Exception:
-                                    pass
-                        # arrays of images
-                        for arrk in ('images', 'extra_images'):
-                            for val in (r.get(arrk) or []):
-                                if val and isinstance(val, str) and (val.startswith('/') or val.startswith('assets/') or val.startswith('static/')):
-                                    try:
-                                        p = (BASE_DIR / val.lstrip('/'))
-                                        if p.exists() and p.is_file():
-                                            p.unlink()
-                                    except Exception:
-                                        pass
-                except Exception:
-                    pass
-                save_recipes(recipes_data, RECIPE_FILE)
-                collection_mgr = RecipeCollection(recipes_data)
-                search_mgr = RecipeSearch(recipes_data)
+                delete_recipe(recipe_id)
                 send_json(200, {'status': 'deleted', 'id': recipe_id})
                 return
             if not new_recipe.get('id'):
                 new_recipe['id'] = str(uuid.uuid4())
-            existing_idx = next((i for i, r in enumerate(recipes_data) if r.get('id') == new_recipe.get('id')),-1)
-            is_new_recipe = existing_idx < 0
-            if existing_idx >= 0:
-                existing = recipes_data[existing_idx]
+            existing = get_recipe(new_recipe.get('id'))
+            is_new_recipe = existing is None
+            if existing:
                 existing_owner = str(existing.get('owner') or '').strip()
                 new_recipe['owner'] = existing_owner or user
                 if 'favorited_by' not in new_recipe:
@@ -723,20 +646,14 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             if owner_tag and not any(t.strip().lower() == owner_tag.lower() for t in tags):
                 tags.append(owner_tag)
             new_recipe['tags'] = tags
-            if existing_idx >= 0:
-                recipes_data[existing_idx] = new_recipe
-            else:
-                recipes_data.append(new_recipe)
-            save_recipes(recipes_data, RECIPE_FILE)
-            collection_mgr = RecipeCollection(recipes_data)
-            search_mgr = RecipeSearch(recipes_data)
+            save_recipe(new_recipe)
             
-            # Check achievements if new recipe
             awarded_achievements = []
-            if is_new_recipe:
+            u = get_user(user)
+            if is_new_recipe and u:
                 from logic.achievements import check_and_award_achievements
-                awarded_achievements = check_and_award_achievements(users_data[user], 'recipe_created')
-                save_users(users_data)
+                awarded_achievements = check_and_award_achievements(u, 'recipe_created')
+                save_user(u)
             
             response_data = {'status': 'success', 'recipe': new_recipe}
             if awarded_achievements:
@@ -754,7 +671,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             if not recipe_id or action not in ('add', 'remove'):
                 send_json(400, {'error': 'Invalid parameters'})
                 return
-            found = next((r for r in recipes_data if str(r.get('id')) == str(recipe_id)), None)
+            found = get_recipe(recipe_id)
             if not found:
                 send_json(404, {'error': 'Recipe not found'})
                 return
@@ -765,17 +682,14 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             else:
                 favs = [u for u in favs if u != request_user]
             found['favorited_by'] = favs
-            try:
-                save_recipes(recipes_data, RECIPE_FILE)
-            except Exception:
-                pass
+            save_recipe(found)
             
-            # Check achievements if adding favorite
             awarded_achievements = []
-            if action == 'add' and request_user in users_data:
+            u = get_user(request_user)
+            if action == 'add' and u:
                 from logic.achievements import check_and_award_achievements
-                awarded_achievements = check_and_award_achievements(users_data[request_user], 'recipe_favorited')
-                save_users(users_data)
+                awarded_achievements = check_and_award_achievements(u, 'recipe_favorited')
+                save_user(u)
             
             response_data = {'status': 'ok', 'recipe': found}
             if awarded_achievements:
@@ -791,34 +705,18 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             if get_username_lookup_key(user) != get_username_lookup_key(target):
                 send_json(401, {'error': 'Not authorized to delete other users'})
                 return
-            users_data = load_users()
-            stored_target = find_username_key(users_data, target)
-            if stored_target:
-                users_data.pop(stored_target, None)
-                save_users(users_data)
-            for r in recipes_data:
+            delete_user(target)
+            for r in get_all_recipes():
                 favs = r.get('favorited_by') or []
                 if target in favs:
                     r['favorited_by'] = [u for u in favs if u != target]
                 if r.get('owner') and str(r.get('owner')) == target:
                     r['owner'] = ''
-            try:
-                save_recipes(recipes_data, RECIPE_FILE)
-            except Exception:
-                pass
-            journey = load_json_file(WORLD_JOURNEY_FILE, WORLD_LOCK, default=[])
-            changed = False
-            for e in journey:
+                save_recipe(r)
+            for e in get_journey_entries():
                 if e.get('owner') and str(e.get('owner')) == target:
                     e['owner'] = ''
-                    changed = True
-            if changed:
-                try:
-                    save_json_file(journey, WORLD_JOURNEY_FILE, WORLD_LOCK)
-                except Exception:
-                    pass
-            collection_mgr = RecipeCollection(recipes_data)
-            search_mgr = RecipeSearch(recipes_data)
+                    save_journey_entry(e)
             send_json(200, {'status': 'deleted', 'user': target}, delete_cookie=True)
             return
 
@@ -832,17 +730,14 @@ class CookbookHandler(SimpleHTTPRequestHandler):
 
         if path.startswith("/api/world_journey/"):
             entry_id = path[len("/api/world_journey/"):]
-            journey = load_json_file(WORLD_JOURNEY_FILE, WORLD_LOCK, default=[])
-
-            existing_idx = next((i for i, e in enumerate(journey) if str(e.get("id")) == entry_id), -1)
-            if existing_idx < 0:
+            existing = get_journey_entry(entry_id)
+            if not existing:
                 self.send_response(404)
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps({"error": "Entry not found"}).encode("utf-8"))
                 return
 
-            existing = journey[existing_idx]
             if existing.get("owner") and existing.get("owner") != user:
                 self.send_response(401)
                 self.send_header("Content-type", "application/json")
@@ -850,9 +745,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps({"error": "Not authorized"}).encode("utf-8"))
                 return
 
-            journey.pop(existing_idx)
-            save_json_file(journey, WORLD_JOURNEY_FILE, WORLD_LOCK)
-
+            delete_journey_entry(entry_id)
             self.send_response(200)
             self.send_header("Content-type", "application/json")
             self.end_headers()
@@ -894,15 +787,7 @@ def run_server(port=None):
     server.serve_forever()
 
 def main():
-    global recipes_data, collection_mgr, search_mgr
-    recipes_data = load_recipes(RECIPE_FILE)
-    
-    collection_mgr = RecipeCollection(recipes_data)
-    search_mgr = RecipeSearch(recipes_data)
-
     print("Cookbook application initialized.")
-    print(f"Loaded {len(recipes_data)} recipes.")
-    
     run_server()
 
 if __name__ == "__main__":
