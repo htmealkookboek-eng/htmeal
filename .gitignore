@@ -29,6 +29,13 @@ backup/
 *.swo
 .tmp_verify_delete.py
 
+# Runtime persistence - never commit live state
+data/cookbook.db
+data/cookbook.db-*
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
 # Build output
 /dist/
 dist/

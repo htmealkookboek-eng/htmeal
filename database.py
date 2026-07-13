@@ -28,10 +28,36 @@ if SUPABASE_URL and supabase_key:
     supabase_client = create_client(SUPABASE_URL, supabase_key)
 
 ALLOWED_IMAGE_MIME = {'image/jpeg', 'image/jpg', 'image/png', 'image/webp'}
+LOCAL_SQLITE_ALLOWED = os.environ.get('HTMEAL_ALLOW_LOCAL_SQLITE', '').strip().lower() in {'1', 'true', 'yes', 'on'}
+PRODUCTION_RENDER = os.environ.get('RENDER', '').strip().lower() in {'1', 'true', 'yes', 'on'}
+
+
+def _normalize_lookup_username(username):
+    return str(username or '').strip().casefold()
+
+
+def _find_user_row_by_username(rows, username):
+    lookup_key = _normalize_lookup_username(username)
+    for row in rows:
+        if _normalize_lookup_username(row['username']) == lookup_key:
+            return row
+    return None
+
+
+def require_persistent_store():
+    if supabase_client:
+        return
+    if PRODUCTION_RENDER and not LOCAL_SQLITE_ALLOWED:
+        raise RuntimeError(
+            'Production persistence requires SUPABASE_URL and a valid Supabase key. '
+            'Refusing to silently fall back to the repo-local SQLite file.'
+        )
+
 
 def get_connection():
     if supabase_client:
         return None
+    require_persistent_store()
     os.makedirs(DB_PATH.parent, exist_ok=True)
     conn = sqlite3.connect(str(DB_PATH), timeout=30, check_same_thread=False)
     conn.row_factory = sqlite3.Row
@@ -181,6 +207,7 @@ def migrate_from_json():
 
 def ensure_db():
     if supabase_client:
+        print(f'Using persistence: Supabase ({SUPABASE_URL})')
         try:
             remote_users = get_all_users()
             remote_recipes = get_all_recipes()
@@ -191,6 +218,8 @@ def ensure_db():
             pass
         return
 
+    require_persistent_store()
+    print(f'Using persistence: local SQLite file at {DB_PATH}')
     if not DB_PATH.exists():
         migrate_from_json()
     else:
@@ -308,13 +337,15 @@ def delete_recipe(recipe_id, connection=None):
     return True
 
 def get_user(username):
+    lookup_key = _normalize_lookup_username(username)
     if supabase_client:
-        res = supabase_client.table('users').select('*').eq('username', str(username)).execute()
-        return _user_from_row(res.data[0]) if res.data else None
+        res = supabase_client.table('users').select('*').execute()
+        row = next((row for row in res.data if _normalize_lookup_username(row.get('username')) == lookup_key), None)
+        return _user_from_row(row) if row else None
 
     conn = get_connection()
-    cur = conn.execute("SELECT * FROM users WHERE username = ?", (username,))
-    row = cur.fetchone()
+    rows = conn.execute("SELECT * FROM users").fetchall()
+    row = _find_user_row_by_username(rows, lookup_key)
     user = _user_from_row(row) if row else None
     conn.close()
     return user
@@ -332,8 +363,9 @@ def get_all_users():
     return users
 
 def save_user(user, connection=None):
+    username = str(user.get('username') or '').strip()
     data = {
-        'username': user['username'],
+        'username': username,
         'password': user.get('password', ''),
         'session_token': user.get('session_token'),
         'csrf_token': user.get('csrf_token'),

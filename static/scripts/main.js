@@ -192,6 +192,15 @@ function updateUserDisplay() {
   }
   window.currentCookbookUser = name;
 }
+function restoreStoredSessionState() {
+  const storedUser = getStoredSessionUser();
+  const storedToken = getStoredSessionToken();
+  if (!storedUser || !storedToken) {
+    return false;
+  }
+  setCurrentUser(storedUser);
+  return true;
+}
 function setCurrentUser(name) {
   const normalized = (name || '').trim();
   if (!normalized || !isValidUsername(normalized)) {
@@ -262,9 +271,19 @@ const loginLogoutButton = document.getElementById('btn-logout');
 const knownUsersContainer = document.getElementById('known-users');
 
 async function refreshAuthStatus() {
+  const storedUser = getStoredSessionUser();
+  const storedToken = getStoredSessionToken();
+  if (storedToken && storedUser) {
+    setCurrentUser(storedUser);
+  }
+
   try {
     const res = await apiFetch('/api/auth/status');
     if (!res.ok) {
+      if (storedToken && storedUser) {
+        showAuthModalState();
+        return true;
+      }
       setCurrentUser('');
       saveStoredSessionToken('');
       showAuthModalState();
@@ -279,12 +298,21 @@ async function refreshAuthStatus() {
       return true;
     }
 
+    if (storedToken && storedUser) {
+      showAuthModalState();
+      return true;
+    }
+
     setCurrentUser('');
     saveStoredSessionToken('');
     showAuthModalState();
     return false;
   } catch (error) {
     console.error('Could not refresh auth status', error);
+    if (storedToken && storedUser) {
+      showAuthModalState();
+      return true;
+    }
     return false;
   }
 }
@@ -3149,6 +3177,7 @@ function showAchievementUnlocked(achievement) {
   }
 }
 
+restoreStoredSessionState();
 refreshAuthStatus().then((loggedIn) => {
   if (!loggedIn) {
     openLoginModal();
