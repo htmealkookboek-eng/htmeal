@@ -1122,13 +1122,39 @@ function openRecipeViewById(recipeId) {
   if(recipe) openRecipeView(recipe);
 }
 
+function getNewestRecipes(recipes) {
+  const annotated = recipes.map(r => {
+    let latestActivity = new Date(r.created_at || 0).getTime();
+    let isComment = false;
+    let commentSnippet = '';
+    let commentAuthor = '';
+
+    if (r.notes && r.notes.length > 0) {
+      const sortedNotes = [...r.notes].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      const latestNote = sortedNotes[0];
+      const noteTime = new Date(latestNote.timestamp).getTime();
+      if (noteTime > latestActivity) {
+        latestActivity = noteTime;
+        isComment = true;
+        commentSnippet = latestNote.text;
+        commentAuthor = latestNote.author;
+      }
+    }
+    return { ...r, latestActivity, isComment, commentSnippet, commentAuthor };
+  });
+
+  annotated.sort((a, b) => b.latestActivity - a.latestActivity);
+  return annotated.slice(0, 10);
+}
+
 async function renderHeroSection(recipes) {
   const heroSection = document.getElementById('hero-section');
   if(!heroSection) return;
 
   const spotlight = await getVegetableSpotlight();
   const shuffled = [...recipes].sort(() => Math.random() - 0.5);
-  const hasFeaturedCollection = Math.random() < 0.45;
+  const showNieuwCollection = Math.random() < 0.33;
+  const hasFeaturedCollection = !showNieuwCollection && Math.random() < 0.45;
   const heroRecipe = shuffled.find(r => r.image) || recipes[0] || null;
   const spotlightFallbackImage = spotlight?.spotlightImage || (spotlight?.seasonalVeggies?.[0]?.image) || 'assets/img/tomaat.webp';
   const heroImage = heroRecipe?.image || spotlightFallbackImage;
@@ -1227,6 +1253,46 @@ async function renderHeroSection(recipes) {
         fetchRecipes(query);
       });
     });
+  } else if (showNieuwCollection && recipes.length > 0) {
+    const newest = getNewestRecipes(recipes);
+    const newestRecipe = newest[0];
+    
+    let titleText = 'Onlangs toegevoegd';
+    let pText = 'Ontdek de allernieuwste toevoegingen aan HTMeal.';
+    if (newestRecipe.isComment) {
+      titleText = `${escapeHtml(newestRecipe.commentAuthor || 'Iemand')} heeft een opmerking geplaatst bij ${escapeHtml(newestRecipe.title)}`;
+      const snippet = newestRecipe.commentSnippet.length > 60 ? newestRecipe.commentSnippet.substring(0, 60) + '...' : newestRecipe.commentSnippet;
+      pText = `"${escapeHtml(snippet)}"`;
+    }
+
+    const nieuwHeroImage = newestRecipe.image || spotlightFallbackImage;
+
+    const card = document.createElement('div');
+    card.className = 'hero-card';
+    card.innerHTML = `
+      <div>
+        <span style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-text-muted); letter-spacing: 0.12em; text-transform: uppercase;">Nieuwste activiteit</span>
+        <h3>${titleText}</h3>
+        <p>${pText}</p>
+      </div>
+    `;
+    const viewButton = document.createElement('button');
+    viewButton.type = 'button';
+    viewButton.className = 'btn btn-primary';
+    viewButton.textContent = newestRecipe.isComment ? 'Bekijk opmerking' : 'Bekijk recept';
+    viewButton.onclick = () => openRecipeView(newestRecipe);
+    card.appendChild(viewButton);
+
+    const imageCard = document.createElement('div');
+    imageCard.className = 'hero-image-card';
+    imageCard.innerHTML = `
+      <img src="${nieuwHeroImage}" alt="Nieuw recept">
+      <div class="hero-image-overlay"><span>${escapeHtml(newestRecipe.title)}</span></div>
+    `;
+    imageCard.onclick = () => openRecipeView(newestRecipe);
+
+    heroSection.appendChild(card);
+    heroSection.appendChild(imageCard);
   } else {
     const card = document.createElement('div');
     card.className = 'hero-card';
@@ -2747,8 +2813,25 @@ document.getElementById('btn-open-import').onclick = () => {
   openManagedModal(editorModal);
 };
 document.getElementById('btn-close-editor').onclick = () => {
-  closeManagedModal(editorModal);
 };
+
+const btnNieuw = document.getElementById('nav-nieuw');
+if (btnNieuw) {
+  btnNieuw.addEventListener('click', async () => {
+    if (window.innerWidth <= 768) {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebar-backdrop').classList.remove('active');
+    }
+    document.getElementById('hero-section').style.display = 'none';
+    viewTitle.textContent = 'Nieuw (Recent toegevoegd of gewijzigd)';
+    searchInput.value = '';
+    AppState.lastRecipeQuery = '';
+    
+    const recipes = await fetchCollections();
+    const newest = getNewestRecipes(recipes);
+    renderRecipes(newest);
+  });
+}
 
 const importTextInput = document.getElementById('import-text');
 const importButton = document.getElementById('btn-run-import');
