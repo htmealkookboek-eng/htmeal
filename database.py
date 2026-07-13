@@ -71,6 +71,8 @@ def _to_json(value):
 def _from_json(value, default):
     if not value:
         return default
+    if isinstance(value, (dict, list)):
+        return value
     try:
         return json.loads(value)
     except Exception:

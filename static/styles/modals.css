@@ -540,7 +540,7 @@
   will-change: transform;
 }
 
-#recipe-view-modal .recipe-gallery-image {
+#recipe-view-modal .recipe-gallery-item {
   min-width: 100%;
   height: 100%;
   display: flex;
@@ -550,7 +550,7 @@
   position: relative;
 }
 
-#recipe-view-modal .recipe-gallery-image img {
+#recipe-view-modal .recipe-gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;

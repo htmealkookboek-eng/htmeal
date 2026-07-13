@@ -769,41 +769,93 @@ const TAG_ALIASES = {
   
   'kip': 'kip',
   'chicken': 'kip',
+  'kippenbout': 'kip',
+  'kipfilet': 'kip',
+  'kippendij': 'kip',
   
   'rijst': 'rijst',
   'rice': 'rijst',
+  'zilvervliesrijst': 'rijst',
+  'basmati': 'rijst',
   
   'pasta': 'pasta',
   'spaghetti': 'pasta',
   'macaroni': 'pasta',
   'penne': 'pasta',
+  'fusilli': 'pasta',
+  'tagliatelle': 'pasta',
   
   'vis': 'vis',
   'fish': 'vis',
+  'zalm': 'vis',
+  'kabeljauw': 'vis',
   
   'kaas': 'kaas',
   'cheese': 'kaas',
+  'mozzarella': 'kaas',
+  'parmezaan': 'kaas',
+  'feta': 'kaas',
   
   'varken': 'varkensvlees',
   'pork': 'varkensvlees',
+  'gehakt': 'vlees',
   'rundvlees': 'rund',
   'beef': 'rund',
+  'biefstuk': 'rund',
   
   // Course types
   'ontbijten': 'ontbijt',
+  'breakfast': 'ontbijt',
   'lunchgerecht': 'lunch',
+  'lunchtijd': 'lunch',
   'dinergerecht': 'diner',
   'hoofdgerecht': 'diner',
+  'avondeten': 'diner',
   'voorgerecht': 'voorgerecht',
+  'starters': 'voorgerecht',
   'nagerecht': 'dessert',
   'toetje': 'dessert',
   'desserts': 'dessert',
+  'sweet': 'dessert',
+  'zoet': 'dessert',
+  'gebak': 'dessert',
   
   'chocolade': 'chocola',
   'chocolate': 'chocola',
   
   'bakken': 'bakken',
-  'baking': 'bakken'
+  'baking': 'bakken',
+  
+  // Extra cuisines & types
+  'aziatisch': 'aziatisch',
+  'asian': 'aziatisch',
+  'indonesisch': 'indisch',
+  'mexicaans': 'mexicaans',
+  'mexican': 'mexicaans',
+  'hollands': 'nederlands',
+  'dutch': 'nederlands',
+  'stamppot': 'nederlands',
+  
+  // Veggies & Other
+  'groente': 'groenten',
+  'vegetables': 'groenten',
+  'fruit': 'fruit',
+  'fruits': 'fruit',
+  'appel': 'fruit',
+  'banaan': 'fruit',
+  
+  // Occasions
+  'feestdagen': 'feest',
+  'kerst': 'feest',
+  'pasen': 'feest',
+  'bbq': 'barbecue',
+  'barbeque': 'barbecue',
+  
+  // Health
+  'glutenvrij': 'glutenvrij',
+  'gluten-free': 'glutenvrij',
+  'lactosevrij': 'lactosevrij',
+  'dairy-free': 'lactosevrij'
 };
 
 const EXCLUDED_TAGS = new Set([

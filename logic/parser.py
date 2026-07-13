@@ -387,17 +387,13 @@ def extract_instagram_image(html_text):
         r'<video[^>]+poster="([^"]+)"',
         r'<meta[^>]+property="og:image:secure_url"[^>]+content="([^"]+)"',
         r'<meta[^>]+property="og:image"[^>]+content="([^"]+)"',
-        r'<meta[^>]+property="og:video:secure_url"[^>]+content="([^"]+)"',
-        r'<meta[^>]+property="og:video"[^>]+content="([^"]+)"',
-        r'<video[^>]+src="([^"]+)"',
-        r'<source[^>]+src="([^"]+)"',
         r'<img[^>]+src="([^"]+)"'
     ]
     for pattern in poster_patterns:
         match = re.search(pattern, html_text, re.IGNORECASE)
         if match:
             candidate = html.unescape(match.group(1)).strip()
-            if candidate:
+            if candidate and not candidate.startswith('blob:') and not candidate.endswith('.mp4'):
                 return candidate
     return ''
 
@@ -751,6 +747,79 @@ def parse_pinterest_pin(html_text, url):
     }
 
 
+def parse_courgetticonfetti_html(html_text, url):
+    if not ('courgetticonfetti.nl' in url.lower() or 'courgetticonfetti.nl' in html_text.lower() or 'vc_acf ingredienten-lijst' in html_text):
+        return None
+        
+    title = ""
+    title_match = re.search(r'<h1[^>]*>.*?<span>(.*?)</span>.*?</h1>', html_text, re.IGNORECASE | re.DOTALL)
+    if not title_match:
+        title_match = re.search(r'<h1[^>]*>(.*?)</h1>', html_text, re.IGNORECASE | re.DOTALL)
+    if title_match:
+        title = clean_html_text(title_match.group(1))
+        
+    desc = ""
+    desc_match = re.search(r'<div class="uncode_text_column[^>]*>(.*?)</div>\s*</div>\s*</div>\s*</div>\s*<script', html_text, re.IGNORECASE | re.DOTALL)
+    if not desc_match:
+        desc_match = re.search(r'<meta property="og:description" content="([^"]+)"', html_text)
+    if desc_match:
+        desc = clean_html_text(desc_match.group(1))
+
+    image = ""
+    img_match = re.search(r'<div class="uncode-single-media-wrapper[^>]*>.*?<img[^>]*src="([^"]+)"', html_text, re.IGNORECASE | re.DOTALL)
+    if not img_match:
+        img_match = re.search(r'<meta property="og:image" content="([^"]+)"', html_text)
+    if img_match:
+        image = img_match.group(1)
+
+    ingredients = []
+    ingr_match = re.search(r'<div class="[^"]*vc_acf ingredienten-lijst[^"]*">(.*?)</div>', html_text, re.IGNORECASE | re.DOTALL)
+    if ingr_match:
+        ingredients = extract_html_list_items(ingr_match.group(1))
+
+    instructions = []
+    instr_match = re.search(r'<div class="[^"]*vc_acf recept-beschrijving[^"]*">(.*?)</div>', html_text, re.IGNORECASE | re.DOTALL)
+    if instr_match:
+        instructions = extract_html_list_items(instr_match.group(1))
+
+    cooking_time = 30
+    time_match = re.search(r'<div class="[^"]*vc_acf recept-tijd[^"]*">.*?(\d+).*?</div>', html_text, re.IGNORECASE | re.DOTALL)
+    if time_match:
+        try:
+            cooking_time = int(time_match.group(1))
+        except ValueError:
+            pass
+
+    servings = 4
+    serv_match = re.search(r'<div class="[^"]*vc_acf h3[^"]*">.*?(\d+).*?personen.*?</div>', html_text, re.IGNORECASE | re.DOTALL)
+    if serv_match:
+        try:
+            servings = int(serv_match.group(1))
+        except ValueError:
+            pass
+
+    tags = []
+    for tag_match in re.finditer(r'<div class="[^"]*vc_acf recept-bullets[^"]*">(.*?)</div>', html_text, re.IGNORECASE | re.DOTALL):
+        tag = clean_html_text(tag_match.group(1))
+        if tag:
+            tags.append(tag)
+
+    if not ingredients and not instructions:
+        return None
+
+    return {
+        "title": title or "Courgetti Confetti Recept",
+        "description": desc,
+        "image": image,
+        "source": url,
+        "ingredients": ingredients,
+        "instructions": instructions,
+        "servings": servings,
+        "cooking_time": cooking_time,
+        "collections": [],
+        "tags": tags
+    }
+
 def extract_recipe_from_text(text):
     text = text.strip()
     url = ""
@@ -768,6 +837,11 @@ def extract_recipe_from_text(text):
     if instagram_recipe:
         return sanitize_recipe(instagram_recipe)
 
+    if 'vc_acf ingredienten-lijst' in text or 'courgetticonfetti.nl' in url.lower():
+        confetti = parse_courgetticonfetti_html(text, url)
+        if confetti:
+            return sanitize_recipe(confetti)
+
     # Try LD+JSON first (works for 90% of blogs including miljuschka)
     ld_recipe = extract_ld_json_recipe(text, url)
     if ld_recipe:
@@ -779,7 +853,6 @@ def extract_recipe_from_text(text):
     # Fallback to AH specific
     if "data-testid=\"header-title\"" in text or "typography_" in text or "allerhande" in text.lower():
         return sanitize_recipe(parse_ah_allerhande_html(text, url))
-
     # Try generic webpage parse for other blogs
     generic_recipe = parse_generic_webpage(text, url)
     if generic_recipe and (generic_recipe.get('ingredients') or generic_recipe.get('instructions') or generic_recipe.get('description') or generic_recipe.get('image')):
