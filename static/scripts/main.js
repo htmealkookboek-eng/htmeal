@@ -741,11 +741,46 @@ const TAG_ALIASES = {
   'zonder vlees en vis': 'vegetarisch',
   'zonder vlees': 'vegetarisch',
   'zonder vis': 'vegetarisch',
-  'vegetarisch': 'vegetarisch',
   'veggie': 'vegetarisch',
   'vegan': 'vegan',
   'italiaans': 'italiaans',
-  'mediterraan': 'mediterraan'
+  'mediterraan': 'mediterraan',
+  
+  // Speed & Difficulty
+  'snel': 'snel & makkelijk',
+  'makkelijk': 'snel & makkelijk',
+  'easy': 'snel & makkelijk',
+  'snelle maaltijd': 'snel & makkelijk',
+  'simpel': 'snel & makkelijk',
+  
+  // Ingredients (Plurals & English)
+  'tomaat': 'tomaat',
+  'tomaten': 'tomaat',
+  'tomato': 'tomaat',
+  'tomatoes': 'tomaat',
+  
+  'aardappel': 'aardappel',
+  'aardappels': 'aardappel',
+  'aardappelen': 'aardappel',
+  'potato': 'aardappel',
+  'potatoes': 'aardappel',
+  
+  'kip': 'kip',
+  'chicken': 'kip',
+  
+  'rijst': 'rijst',
+  'rice': 'rijst',
+  
+  'pasta': 'pasta',
+  'spaghetti': 'pasta',
+  'macaroni': 'pasta',
+  'penne': 'pasta',
+  
+  'vis': 'vis',
+  'fish': 'vis',
+  
+  'kaas': 'kaas',
+  'cheese': 'kaas'
 };
 
 const EXCLUDED_TAGS = new Set([
@@ -763,14 +798,10 @@ const EXCLUDED_TAGS = new Set([
   'airfryer',
   'gratineren',
   'stoofpot',
-  'snel',
-  'easy',
   'gezond',
   'lunch',
   'diner',
   'ontbijt',
-  'snelle maaltijd',
-  'simpel',
   'budget',
   'maaltijd',
   'tussendoor'
@@ -810,6 +841,11 @@ function buildCollectionEntries(tagsMap) {
       label: 'vegetarisch',
       tags: ['vegetarisch'],
       search: 'vegetarisch'
+    },
+    {
+      label: 'snel & makkelijk',
+      tags: ['snel & makkelijk'],
+      search: 'snel & makkelijk'
     }
   ];
 
