@@ -158,6 +158,8 @@ def _user_from_row(row):
     user = dict(row)
     user['is_admin'] = bool(user.get('is_admin'))
     user['meta'] = _from_json(user.get('meta'), {})
+    user['achievements'] = user['meta'].get('achievements', {})
+    user['stats'] = user['meta'].get('stats', {})
     return user
 
 def _journey_from_row(row):
@@ -364,6 +366,13 @@ def get_all_users():
 
 def save_user(user, connection=None):
     username = str(user.get('username') or '').strip()
+    
+    meta = user.get('meta', {})
+    if 'achievements' in user:
+        meta['achievements'] = user['achievements']
+    if 'stats' in user:
+        meta['stats'] = user['stats']
+        
     data = {
         'username': username,
         'password': user.get('password', ''),
@@ -371,7 +380,7 @@ def save_user(user, connection=None):
         'csrf_token': user.get('csrf_token'),
         'created_at': user.get('created_at') or datetime.utcnow().isoformat(),
         'is_admin': int(bool(user.get('is_admin'))),
-        'meta': _to_json(user.get('meta', {}))
+        'meta': _to_json(meta)
     }
     
     if supabase_client:

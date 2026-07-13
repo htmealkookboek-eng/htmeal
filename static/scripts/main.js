@@ -742,7 +742,9 @@ const TAG_ALIASES = {
   'zonder vlees': 'vegetarisch',
   'zonder vis': 'vegetarisch',
   'veggie': 'vegetarisch',
-  'vegan': 'vegan',
+  'veganistisch': 'vegan',
+  'plant-based': 'vegan',
+  'plant based': 'vegan',
   'italiaans': 'italiaans',
   'mediterraan': 'mediterraan',
   
@@ -780,7 +782,28 @@ const TAG_ALIASES = {
   'fish': 'vis',
   
   'kaas': 'kaas',
-  'cheese': 'kaas'
+  'cheese': 'kaas',
+  
+  'varken': 'varkensvlees',
+  'pork': 'varkensvlees',
+  'rundvlees': 'rund',
+  'beef': 'rund',
+  
+  // Course types
+  'ontbijten': 'ontbijt',
+  'lunchgerecht': 'lunch',
+  'dinergerecht': 'diner',
+  'hoofdgerecht': 'diner',
+  'voorgerecht': 'voorgerecht',
+  'nagerecht': 'dessert',
+  'toetje': 'dessert',
+  'desserts': 'dessert',
+  
+  'chocolade': 'chocola',
+  'chocolate': 'chocola',
+  
+  'bakken': 'bakken',
+  'baking': 'bakken'
 };
 
 const EXCLUDED_TAGS = new Set([
