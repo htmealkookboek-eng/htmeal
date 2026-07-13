@@ -377,6 +377,28 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                 if existing_user:
                     send_json(400, {'error': 'User already exists'})
                     return
+                
+                invite_code = (body.get('invite_code') or '').strip()
+                if not invite_code:
+                    send_json(400, {'error': 'Uitnodigingscode (Invite code) vereist'})
+                    return
+                
+                try:
+                    with open(BASE_DIR / "data" / "invite_codes.txt", "r") as f:
+                        valid_codes = {line.strip() for line in f if line.strip()}
+                except FileNotFoundError:
+                    send_json(500, {'error': 'Invite codes file missing on server'})
+                    return
+                
+                if invite_code not in valid_codes:
+                    send_json(400, {'error': 'Ongeldige uitnodigingscode (Invalid invite code)'})
+                    return
+                
+                all_users = get_all_users()
+                if any(u.get('meta', {}).get('invite_code') == invite_code for u in all_users.values()):
+                    send_json(400, {'error': 'Deze uitnodigingscode is al gebruikt (This code has already been used)'})
+                    return
+
                 from logic.achievements import check_and_award_achievements
                 token = uuid.uuid4().hex
                 new_user = {
@@ -385,7 +407,7 @@ class CookbookHandler(SimpleHTTPRequestHandler):
                     'created_at': datetime.now().isoformat(),
                     'session_token': token,
                     'is_admin': 0,
-                    'meta': {}
+                    'meta': {'invite_code': invite_code}
                 }
                 check_and_award_achievements(new_user, 'account_created')
                 save_user(new_user)

@@ -434,11 +434,15 @@ if (toggleRegisterBtn) {
       submit.textContent = 'Account aanmaken';
       toggle.textContent = 'Terug naar inloggen';
       if (known) known.style.display = 'none';
+      const inviteContainer = document.getElementById('register-invite-container');
+      if (inviteContainer) inviteContainer.style.display = 'flex';
     } else {
       title.textContent = 'Inloggen';
       submit.textContent = 'Inloggen';
       toggle.textContent = 'Registreer hier';
       if (known) known.style.display = 'block';
+      const inviteContainer = document.getElementById('register-invite-container');
+      if (inviteContainer) inviteContainer.style.display = 'none';
     }
   });
 }
@@ -447,6 +451,7 @@ if (loginForm) {
     event.preventDefault();
     const username = (loginUsernameInput ? loginUsernameInput.value.trim() : '').trim();
     const password = (document.getElementById('login-password') ? document.getElementById('login-password').value : '').trim();
+    const inviteCode = (document.getElementById('login-invite-code') ? document.getElementById('login-invite-code').value : '').trim();
     const error = document.getElementById('login-error');
     
     if (!username || !password) {
@@ -464,10 +469,12 @@ if (loginForm) {
         return;
       }
       const action = isRegisterMode ? 'register' : 'login';
+      const bodyPayload = { username, password, action };
+      if (isRegisterMode) bodyPayload.invite_code = inviteCode;
       const res = await apiFetch('/api/auth', {
         method: 'POST',
         isJson: true,
-        body: { username, password, action }
+        body: bodyPayload
       });
       const data = await parseJsonResponse(res, {});
       

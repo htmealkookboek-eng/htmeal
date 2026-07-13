@@ -92,6 +92,10 @@
             <input id="login-username" class="search-input" type="text" placeholder="Gebruikersnaam" autocomplete="username" required>
             <label for="login-password" class="label">Wachtwoord</label>
             <input id="login-password" class="search-input" type="password" placeholder="Je wachtwoord" autocomplete="current-password" required>
+            <div id="register-invite-container" style="display: none; flex-direction: column; gap: var(--space-1);">
+              <label for="login-invite-code" class="label">Uitnodigingscode (Invite Code)</label>
+              <input id="login-invite-code" class="search-input" type="text" placeholder="Je invite code" autocomplete="off">
+            </div>
             <div id="login-error" style="color: #b00020; font-size: 0.95rem; min-height: 1.2rem;"></div>
             <button id="btn-login-submit" class="btn btn-primary" type="submit">Inloggen</button>
             <div style="text-align: center; font-size: 0.9rem; color: #666;">
