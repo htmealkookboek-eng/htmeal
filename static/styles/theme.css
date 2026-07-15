@@ -1136,7 +1136,7 @@ select:focus-visible,
 
 /* Skeletons */
 .skeleton {
-  background: linear-gradient(90deg, var(--color-paper-alt) 25%, var(--color-border) 50%, var(--color-paper-alt) 75%);
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 400% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-sm);
