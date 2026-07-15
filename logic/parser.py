@@ -3,6 +3,25 @@ import json
 import urllib.request
 import html
 
+def strip_emojis(text):
+    if not isinstance(text, str):
+        return text
+    # Remove emoji unicode blocks and variation selectors/keycaps
+    pattern = re.compile(
+        r'['
+        r'\U0001f600-\U0001f64f'  # emoticons
+        r'\U0001f300-\U0001f5ff'  # symbols & pictographs
+        r'\U0001f680-\U0001f6ff'  # transport & map symbols
+        r'\U0001f1e0-\U0001f1ff'  # flags (iOS)
+        r'\U00002702-\U000027b0'
+        r'\U000024c2-\U0001f251'
+        r'\u2600-\u26FF'          # misc symbols
+        r'\u2700-\u27BF'          # dingbats
+        r'\uFE0F'                 # Variation Selector-16
+        r'\u20E3'                 # Combining Enclosing Keycap
+        r']+', re.UNICODE)
+    return pattern.sub('', text)
+
 def parse_ingredient_line(line):
     parts = line.strip().split(' ', 2)
     amount = ""
@@ -33,8 +52,8 @@ def extract_ld_json_recipe(html_text, url):
             for item in items:
                 if item.get('@type') == 'Recipe' or 'Recipe' in item.get('@type', []):
                     # Found a recipe!
-                    title = html.unescape(item.get('name', 'Imported Recipe'))
-                    desc = html.unescape(item.get('description', ''))
+                    title = strip_emojis(html.unescape(item.get('name', 'Imported Recipe')))
+                    desc = strip_emojis(html.unescape(item.get('description', '')))
                     
                     # Image
                     image = ""
@@ -67,7 +86,7 @@ def extract_ld_json_recipe(html_text, url):
                     # Ingredients
                     ingredients = item.get('recipeIngredient', [])
                     if isinstance(ingredients, str): ingredients = [ingredients]
-                    ingredients = [html.unescape(i) for i in ingredients]
+                    ingredients = [strip_emojis(html.unescape(i)) for i in ingredients]
                     
                     # Instructions
                     instructions = []
@@ -77,10 +96,10 @@ def extract_ld_json_recipe(html_text, url):
                     elif isinstance(instr_data, list):
                         for step in instr_data:
                             if isinstance(step, str):
-                                instructions.append(html.unescape(step))
+                                instructions.append(strip_emojis(html.unescape(step)))
                             elif isinstance(step, dict):
                                 text = step.get('text', '')
-                                if text: instructions.append(html.unescape(text))
+                                if text: instructions.append(strip_emojis(html.unescape(text)))
                                 
                     # Tags
                     tags = []
@@ -110,10 +129,10 @@ def extract_ld_json_recipe(html_text, url):
 
 def parse_ah_allerhande_html(html_text, url):
     title_match = re.search(r'<h1[^>]*data-testid="header-title"[^>]*>([\s\S]*?)</h1>', html_text)
-    title = re.sub(r'<[^>]+>', '', title_match.group(1)).strip() if title_match else "Imported Recipe"
+    title = strip_emojis(re.sub(r'<[^>]+>', '', title_match.group(1)).strip()) if title_match else "Imported Recipe"
 
     desc_match = re.search(r'<p[^>]*data-testid="recipe-description"[^>]*>([\s\S]*?)</p>', html_text)
-    desc = re.sub(r'<[^>]+>', '', desc_match.group(1)).strip() if desc_match else ""
+    desc = strip_emojis(re.sub(r'<[^>]+>', '', desc_match.group(1)).strip()) if desc_match else ""
 
     image = ""
     img_match = re.search(r'<meta property="og:image" content="([^"]+)"', html_text)
@@ -143,12 +162,12 @@ def parse_ah_allerhande_html(html_text, url):
         parts = amt_unit.split(' ', 1)
         amt = parts[0]
         unit = parts[1] if len(parts) > 1 else ""
-        ingredients.append(f"{amt} {unit} {name}".strip())
+        ingredients.append(strip_emojis(f"{amt} {unit} {name}".strip()))
 
     instructions = []
     step_matches = re.finditer(r'<p[^>]*class="[^"]*stepText[^"]*"[^>]*>([\s\S]*?)</p>', html_text)
     for match in step_matches:
-        instructions.append(re.sub(r'<[^>]+>', '', match.group(1)).strip())
+        instructions.append(strip_emojis(re.sub(r'<[^>]+>', '', match.group(1)).strip()))
 
     return {
         "title": title,

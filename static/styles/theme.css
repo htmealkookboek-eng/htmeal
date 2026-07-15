@@ -40,6 +40,19 @@
   --shadow-hover: none;
   --radius-sm: 0px; /* Sharp edges for De Stijl */
   --radius-md: 0px;
+
+  /* Motion Curves */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-out: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-fast: 0.2s var(--ease-out);
+  --transition-spring: 0.4s var(--ease-spring);
+
+  /* Fluid Typography */
+  --font-size-base: clamp(1rem, 1vw + 0.8rem, 1.125rem);
+  --font-size-h1: clamp(2rem, 4vw + 1rem, 3.5rem);
+  --font-size-h2: clamp(1.5rem, 3vw + 0.8rem, 2.5rem);
+  --font-size-h3: clamp(1.25rem, 2vw + 0.75rem, 1.75rem);
+  --font-size-small: clamp(0.8rem, 0.8vw + 0.6rem, 0.95rem);
 }
 
 * {
@@ -59,6 +72,7 @@ html, body {
 
 body {
   font-family: var(--font-sans);
+  font-size: var(--font-size-base);
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.6;
@@ -1118,4 +1132,54 @@ select:focus-visible,
 #achievements-list > div > div:last-child > div:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Skeletons */
+.skeleton {
+  background: linear-gradient(90deg, var(--color-paper-alt) 25%, var(--color-border) 50%, var(--color-paper-alt) 75%);
+  background-size: 400% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+  color: transparent !important;
+  pointer-events: none;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-card {
+  height: 280px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+/* Empty States */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--color-text-muted);
+  background: var(--color-paper-alt);
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--color-border);
+  grid-column: 1 / -1;
+}
+
+.empty-state-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+  opacity: 0.6;
+}
+
+.empty-state-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
 }

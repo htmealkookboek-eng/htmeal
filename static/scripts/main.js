@@ -724,11 +724,21 @@ function loadLastRecipeQuery() {
 }
 
 function renderLoadingState(message = 'Laden van recepten...') {
-  recipeGrid.innerHTML = `<p class="meta-text">${message}</p>`;
+  let skeletons = '';
+  for(let i=0; i<6; i++) {
+    skeletons += `<div class="skeleton skeleton-card"></div>`;
+  }
+  recipeGrid.innerHTML = skeletons;
 }
 
 function renderErrorState(message) {
-  recipeGrid.innerHTML = `<p class="meta-text" style="color: var(--color-accent);">${message}</p>`;
+  recipeGrid.innerHTML = `
+    <div class="empty-state">
+      <div class="empty-state-icon">🍳</div>
+      <div class="empty-state-title">Oeps!</div>
+      <p>${message}</p>
+    </div>
+  `;
 }
 
 function debounce(fn, delay = 250) {
@@ -1011,11 +1021,43 @@ async function fetchFavorites() {
 }
 
 async function toggleFavorite(recipeId, shouldAdd) {
+  if (navigator.vibrate) navigator.vibrate(50);
   const currentUser = getCurrentUserName();
   if (!currentUser) {
     openLoginModal();
     return;
   }
+  
+  // Optimistic UI update
+  let originalRecipe = null;
+  let originalIndex = -1;
+  for (let i = 0; i < currentRecipes.length; i++) {
+    if (String(currentRecipes[i].id) === String(recipeId)) {
+      originalIndex = i;
+      originalRecipe = { ...currentRecipes[i] };
+      
+      const idx = currentRecipes[i].is_favorite ? currentRecipes[i].is_favorite.indexOf(currentUser) : -1;
+      let newFavs = [...(currentRecipes[i].is_favorite || [])];
+      
+      if (shouldAdd && idx === -1) {
+        newFavs.push(currentUser);
+      } else if (!shouldAdd && idx !== -1) {
+        newFavs.splice(idx, 1);
+      }
+      
+      currentRecipes[i].is_favorite = newFavs;
+      break;
+    }
+  }
+  
+  if (originalRecipe) {
+    renderRecipes(currentRecipes);
+    if (currentViewRecipe && String(currentViewRecipe.id) === String(recipeId)) {
+      currentViewRecipe = currentRecipes[originalIndex];
+      renderRecipeView(currentViewRecipe);
+    }
+  }
+
   const method = 'POST';
   try {
     const res = await apiFetch('/api/favorite', {
@@ -1025,6 +1067,15 @@ async function toggleFavorite(recipeId, shouldAdd) {
     });
     const data = await res.json();
     if (!res.ok || data.error) {
+      // Revert on error
+      if (originalRecipe && originalIndex !== -1) {
+        currentRecipes[originalIndex] = originalRecipe;
+        renderRecipes(currentRecipes);
+        if (currentViewRecipe && String(currentViewRecipe.id) === String(recipeId)) {
+          currentViewRecipe = originalRecipe;
+          renderRecipeView(currentViewRecipe);
+        }
+      }
       if (data.error === 'Gebruikersnaam vereist') {
         openLoginModal();
         return;
@@ -1998,29 +2049,8 @@ function renderRecipeGallery(recipe, gallery) {
   gallery.innerHTML = '';
   gallery.appendChild(track);
 
-  // If the browser supports CSS scroll-snap, enable a scroll-based fallback
-  const supportsScrollSnap = typeof CSS !== 'undefined' && (CSS.supports('scroll-snap-type', 'x mandatory') || CSS.supports('scroll-snap-type', 'x proximity'));
-  if (supportsScrollSnap) {
-    gallery.classList.add('gallery-scroll-snap');
-    gallery.style.overflowX = 'auto';
-    gallery.style.webkitOverflowScrolling = 'touch';
-    gallery.style.scrollBehavior = 'smooth';
-    // remove transform-based positioning to allow native scrolling
-    track.style.transform = '';
-    track.style.transition = 'none';
-    // ensure children have fixed width
-    requestAnimationFrame(() => {
-      const containerRect = gallery.getBoundingClientRect();
-      const containerWidth = Math.max(0, Math.round(containerRect.width));
-      const itemEls = Array.from(track.children || []);
-      itemEls.forEach((el) => {
-        el.style.flex = '0 0 ' + containerWidth + 'px';
-        el.style.maxWidth = containerWidth + 'px';
-        el.style.boxSizing = 'border-box';
-        el.style.scrollSnapAlign = 'center';
-      });
-    });
-  }
+  // Removed scroll-snap fallback to enforce reliable transform-based sliding
+  // and prevent native scroll interfering with <> buttons.
 
   // Ensure items are exactly the gallery width to avoid visible seams between slides
   requestAnimationFrame(() => {
@@ -2094,17 +2124,7 @@ function changeGalleryIndex(delta, track, onChange) {
       const rect = first.getBoundingClientRect();
       width = Math.round(rect.width) || Math.round(parseInt(first.style.flexBasis || 0, 10)) || 0;
     }
-    // If using scroll-snap fallback, set scrollLeft on the gallery instead of transform
-    const galleryEl = container;
-    if (galleryEl && galleryEl.classList && galleryEl.classList.contains('gallery-scroll-snap')) {
-      try {
-        galleryEl.scrollLeft = currentGalleryIndex * width;
-      } catch (e) {
-        track.style.transform = `translateX(-${currentGalleryIndex * width}px)`;
-      }
-    } else {
-      track.style.transform = `translateX(-${currentGalleryIndex * width}px)`;
-    }
+    track.style.transform = `translateX(-${currentGalleryIndex * width}px)`;
   }
   if (onChange) {
     onChange();
