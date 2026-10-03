@@ -426,10 +426,8 @@ function openLoginModal() {
   openManagedModal(loginModal);
 }
 function closeLoginModal() {
-  if (!getCurrentUserName()) return;
   closeManagedModal(loginModal);
 }
-// Hide closing if user is required and no user is selected.
 let isRegisterMode = false;
 if (loginCloseButton) {
   loginCloseButton.addEventListener('click', closeLoginModal);
@@ -546,7 +544,32 @@ function escapeHtml(text) {
   return String(text)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatCookingTime(value) {
+  const match = String(value || '').match(/\d+/);
+  const minutes = match ? Number(match[0]) : 0;
+  return Number.isFinite(minutes) && minutes > 0 ? `${minutes}m` : '';
+}
+
+function getDisplayRecipeDescription(value) {
+  const description = String(value || '').replace(/\s+/g, ' ').trim();
+  if (!description) return '';
+
+  const invalidPatterns = [
+    /\b(?:a\s+)?personen\s+past\s+hier\b/i,
+    /\bhint\s+van\s+(?:gram|dl)\b/i,
+    /\bvan\s+elk\s+gram\b/i
+  ];
+  const sentences = description.match(/[^.!?]+[.!?]?/g) || [description];
+  return sentences
+    .filter(sentence => !invalidPatterns.some(pattern => pattern.test(sentence)))
+    .join(' ')
+    .replace(/\s+([.!?])/g, '$1')
+    .trim();
 }
 
 async function parseJsonResponse(response, fallback = {}) {
@@ -1354,7 +1377,7 @@ async function renderHeroSection(recipes) {
     const imageCard = document.createElement('div');
     imageCard.className = 'hero-image-card';
     imageCard.innerHTML = `
-      <img src="${nieuwHeroImage}" alt="Nieuw recept">
+      <img src="${escapeHtml(nieuwHeroImage)}" alt="Nieuw recept">
       <div class="hero-image-overlay"><span>${escapeHtml(newestRecipe.title)}</span></div>
     `;
     imageCard.onclick = () => openRecipeView(newestRecipe);
@@ -1364,11 +1387,12 @@ async function renderHeroSection(recipes) {
   } else {
     const card = document.createElement('div');
     card.className = 'hero-card';
+    const heroDescription = getDisplayRecipeDescription(heroRecipe.description);
     card.innerHTML = `
       <div>
         <span style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-text-muted); letter-spacing: 0.12em; text-transform: uppercase;">Willekeurige keuze</span>
         <h3>Een recept dat je nu moet proberen</h3>
-        <p>${heroRecipe.description || 'Een frisse selectie uit HTMeal, rechtstreeks naar je tafel.'}</p>
+        <p>${escapeHtml(heroDescription || 'Een frisse selectie uit HTMeal, rechtstreeks naar je tafel.')}</p>
       </div>
     `;
     const viewButton = document.createElement('button');
@@ -1381,8 +1405,8 @@ async function renderHeroSection(recipes) {
     const imageCard = document.createElement('div');
     imageCard.className = 'hero-image-card';
     imageCard.innerHTML = `
-      <img src="${heroImage}" alt="${heroImageAlt}">
-      <div class="hero-image-overlay"><span>${heroRecipe.title}</span></div>
+      <img src="${escapeHtml(heroImage)}" alt="${escapeHtml(heroImageAlt)}">
+      <div class="hero-image-overlay"><span>${escapeHtml(heroRecipe.title || 'Ongetiteld')}</span></div>
     `;
     imageCard.onclick = () => openRecipeView(heroRecipe);
 
@@ -1443,7 +1467,7 @@ async function fetchRecipes(query = '') {
     }
     const titleText = query ? query : 'Alle recepten';
     const blockColor = query ? 'ds-blue' : 'ds-yellow';
-    viewTitle.innerHTML = `<span class="de-stijl-block ${blockColor}" style="width:12px; height:12px; margin-right:12px;"></span>${titleText}`;
+    viewTitle.innerHTML = `<span class="de-stijl-block ${blockColor}" style="width:12px; height:12px; margin-right:12px;"></span>${escapeHtml(titleText)}`;
     saveLastRecipeQuery(query);
     return;
   }
@@ -1474,7 +1498,7 @@ async function fetchRecipes(query = '') {
     }
     const titleText = query ? query : 'Alle recepten';
     const blockColor = query ? 'ds-blue' : 'ds-yellow';
-    viewTitle.innerHTML = `<span class="de-stijl-block ${blockColor}" style="width:12px; height:12px; margin-right:12px;"></span>${titleText}`;
+    viewTitle.innerHTML = `<span class="de-stijl-block ${blockColor}" style="width:12px; height:12px; margin-right:12px;"></span>${escapeHtml(titleText)}`;
     saveLastRecipeQuery(query);
   } catch (e) {
     console.error('Kon recepten niet laden', e);
@@ -1749,11 +1773,11 @@ function renderRecipeCard(recipe, index) {
   card.innerHTML = `
     ${imgHtml}
     <h3 class="recipe-card-title">${escapeHtml(recipe.title || 'Ongetiteld')}</h3>
-    <p class="meta-text" style="color: var(--color-text); text-transform:none; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${escapeHtml(recipe.description || '')}</p>
+    <p class="meta-text" style="color: var(--color-text); text-transform:none; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${escapeHtml(getDisplayRecipeDescription(recipe.description) || 'Geen beschrijving beschikbaar.')}</p>
     ${stickersHtml}
     ${noteHtml}
     <div class="recipe-card-meta meta-text" style="margin-bottom: 12px;">
-      <span>${recipe.cooking_time ? recipe.cooking_time + 'm' : ''}</span>
+      <span>${formatCookingTime(recipe.cooking_time) || '—'}</span>
       <span>${recipe.servings ? recipe.servings + ' pers.' : ''}</span>
     </div>
     <div class="recipe-card-meta" style="margin-top:auto;">${tags}</div>
@@ -1845,7 +1869,7 @@ function openRecipeView(recipe) {
     document.addEventListener('keydown', window.recipeViewKeyHandler);
   }
 
-  const tagsHtml = (recipe.tags || []).map(t => `<span class="recipe-tag clickable" onclick='onCollectionTagClick(event, ${JSON.stringify(t)})'>${escapeHtml(t)}</span>`).join('');
+  const tagsHtml = (recipe.tags || []).map(tag => `<span class="recipe-tag clickable" role="button" tabindex="0" data-recipe-tag="${escapeHtml(tag)}">${escapeHtml(tag)}</span>`).join('');
   const notesHtml = renderRecipeNotesMarkup(recipe) ? `<div class="recipe-note-card"><strong>Notities</strong>${renderRecipeNotesMarkup(recipe)}</div>` : '';
   const currentOwner = recipe.owner ? String(recipe.owner).trim() : null;
   const ownerInfo = currentOwner ? `<div class="recipe-owner" style="font-size: 0.8rem; color: var(--color-text-muted);">Toegevoegd door ${escapeHtml(currentOwner)}</div>` : '';
@@ -1886,6 +1910,17 @@ function openRecipeView(recipe) {
     </div>
   `;
 
+  viewRecipeTitle.querySelectorAll('[data-recipe-tag]').forEach(tagElement => {
+    const activateTag = event => onCollectionTagClick(event, tagElement.dataset.recipeTag);
+    tagElement.addEventListener('click', activateTag);
+    tagElement.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        activateTag(event);
+      }
+    });
+  });
+
   const gallery = document.getElementById('view-recipe-gallery');
   if (gallery) {
     renderRecipeGallery(recipe, gallery);
@@ -1894,7 +1929,7 @@ function openRecipeView(recipe) {
   viewRecipeMeta.innerHTML = `
     <div class="recipe-meta-row">
       <div class="recipe-card-stats">
-        <div class="recipe-card-stat"><small>TIJD</small><strong>${recipe.cooking_time || '??'} M</strong></div>
+        <div class="recipe-card-stat"><small>TIJD</small><strong>${formatCookingTime(recipe.cooking_time) || '—'}</strong></div>
         <div class="recipe-card-stat"><small>PERSONEN</small><strong>${recipe.servings || 4}</strong></div>
       </div>
       <div class="recipe-meta-actions">
