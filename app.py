@@ -238,6 +238,12 @@ class CookbookHandler(SimpleHTTPRequestHandler):
         elif token:
             self.send_header('Set-Cookie', f'session={token}; Max-Age=31536000; Path=/; HttpOnly; SameSite=Lax{cookie_suffix}')
 
+    def end_headers(self):
+        path = urllib.parse.urlparse(self.path).path.lower()
+        if path == '/' or path.endswith(('.html', '.js', '.css', '.json')):
+            self.send_header('Cache-Control', 'no-cache, max-age=0, must-revalidate')
+        super().end_headers()
+
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path
