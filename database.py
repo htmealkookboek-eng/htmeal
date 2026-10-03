@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import pathlib
 import sqlite3
@@ -181,7 +182,7 @@ def migrate_from_json():
             for recipe in recipes:
                 save_recipe(recipe, connection=conn)
         except Exception:
-            pass
+            logging.exception("Failed to migrate recipe seed data")
     if USERS_JSON.exists():
         try:
             with open(USERS_JSON, 'r', encoding='utf-8') as f:
@@ -197,7 +198,7 @@ def migrate_from_json():
                     'meta': {k: v for k, v in user.items() if k not in ('password', 'session_token', 'csrf_token', 'created', 'is_admin')}
                 }, connection=conn)
         except Exception:
-            pass
+            logging.exception("Failed to migrate user seed data")
     if WORLD_JOURNEY_JSON.exists():
         try:
             with open(WORLD_JOURNEY_JSON, 'r', encoding='utf-8') as f:
@@ -205,7 +206,7 @@ def migrate_from_json():
             for entry in journey:
                 save_journey_entry(entry, connection=conn)
         except Exception:
-            pass
+            logging.exception("Failed to migrate world journey seed data")
     if conn:
         conn.close()
 
@@ -219,7 +220,7 @@ def ensure_db():
             if not remote_users and not remote_recipes and not remote_journey:
                 migrate_from_json()
         except Exception:
-            pass
+            logging.exception("Supabase startup check failed; JSON bootstrap was skipped")
         return
 
     require_persistent_store()

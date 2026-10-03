@@ -256,79 +256,74 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             super().do_GET()
 
     def handle_api(self, path, query_string):
-        self.send_response(200)
+        params = urllib.parse.parse_qs(query_string)
+        status = 200
+        try:
+            if path == "/api/recipes":
+                query = params.get("q", [""])[0]
+                payload = search_recipes(query) if query else get_all_recipes()
+            elif path == "/api/world_recipes":
+                try:
+                    with open(WORLD_RECIPES_FILE, 'r', encoding='utf-8') as f:
+                        payload = json.load(f)
+                except Exception:
+                    payload = []
+            elif path == "/api/world_journey":
+                owner = params.get("owner", [""])[0].strip()
+                user = self.get_user_name(params)
+                if owner == "all":
+                    payload = get_journey_entries(all_entries=True)
+                elif owner:
+                    payload = get_journey_entries(owner=owner)
+                else:
+                    payload = get_journey_entries(owner=user) if user else get_journey_entries()
+            elif path == "/api/auth/status":
+                payload = {"user": self.get_user_name(params)}
+            elif path == "/api/favorites":
+                owner = self.get_user_name(params)
+                payload = get_favorites(owner) if owner else []
+            elif path == "/api/collections":
+                payload = RecipeCollection(get_all_recipes()).collection_names()
+            elif path == "/api/groentenkalender":
+                try:
+                    with open(BASE_DIR / "data" / "groentenkalender.json", "r", encoding="utf-8") as f:
+                        payload = json.load(f)
+                except Exception:
+                    payload = {"error": "Kan groentenkalender niet laden"}
+            elif path == "/api/achievements":
+                from logic.achievements import get_all_achievements, get_user_stats, ACHIEVEMENTS
+                user = self.get_user_name(params)
+                if not user:
+                    payload = {"error": "Not logged in"}
+                else:
+                    user_data = get_user(user) or {}
+                    achievements = get_all_achievements(user_data)
+                    stats = get_user_stats(user_data)
+                    total_achievements = len(ACHIEVEMENTS)
+                    earned_count = len([a for a in achievements if a.get('earned')])
+                    payload = {
+                        "achievements": achievements,
+                        "stats": stats,
+                        "progress": {
+                            "earned": earned_count,
+                            "total": total_achievements,
+                            "percentage": int((earned_count / total_achievements) * 100) if total_achievements > 0 else 0
+                        }
+                    }
+            else:
+                status = 404
+                payload = {"error": "Not found"}
+            response_body = json.dumps(payload).encode("utf-8")
+        except Exception:
+            logging.exception("API request failed for %s", path)
+            status = 503
+            response_body = json.dumps({"error": "Service temporarily unavailable"}).encode("utf-8")
+
+        self.send_response(status)
         self.send_header("Content-type", "application/json")
         self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
         self.end_headers()
-        
-        params = urllib.parse.parse_qs(query_string)
-        
-        if path == "/api/recipes":
-            q = params.get("q", [""])[0]
-            if q:
-                results = search_recipes(q)
-            else:
-                results = get_all_recipes()
-            self.wfile.write(json.dumps(results).encode("utf-8"))
-            
-        elif path == "/api/world_recipes":
-            try:
-                with open(WORLD_RECIPES_FILE, 'r', encoding='utf-8') as f:
-                    self.wfile.write(f.read().encode("utf-8"))
-            except Exception:
-                self.wfile.write(b"[]")
-                
-        elif path == "/api/world_journey":
-            owner = params.get("owner", [""])[0].strip()
-            user = self.get_user_name(params)
-            if owner == "all":
-                visible_journey = get_journey_entries(all_entries=True)
-            elif owner:
-                visible_journey = get_journey_entries(owner=owner)
-            else:
-                visible_journey = get_journey_entries(owner=user) if user else get_journey_entries()
-            self.wfile.write(json.dumps(visible_journey).encode("utf-8"))
-        elif path == "/api/auth/status":
-            user = self.get_user_name(params)
-            self.wfile.write(json.dumps({"user": user}).encode("utf-8"))
-        elif path == "/api/favorites":
-            owner = self.get_user_name(params)
-            if not owner:
-                self.wfile.write(json.dumps([]).encode("utf-8"))
-                return
-            self.wfile.write(json.dumps(get_favorites(owner)).encode("utf-8"))
-        
-        elif path == "/api/collections":
-            collections = RecipeCollection(get_all_recipes()).collection_names()
-            self.wfile.write(json.dumps(collections).encode("utf-8"))
-        elif path == "/api/groentenkalender":
-            try:
-                with open(BASE_DIR / "data" / "groentenkalender.json", "r", encoding="utf-8") as f:
-                    self.wfile.write(f.read().encode("utf-8"))
-            except Exception:
-                self.wfile.write(json.dumps({"error": "Kan groentenkalender niet laden"}).encode("utf-8"))
-        elif path == "/api/achievements":
-            from logic.achievements import get_all_achievements, get_user_stats, ACHIEVEMENTS
-            user = self.get_user_name(params)
-            if not user:
-                self.wfile.write(json.dumps({"error": "Not logged in"}).encode("utf-8"))
-                return
-            user_data = get_user(user) or {}
-            achievements = get_all_achievements(user_data)
-            stats = get_user_stats(user_data)
-            total_achievements = len(ACHIEVEMENTS)
-            earned_count = len([a for a in achievements if a.get('earned')])
-            self.wfile.write(json.dumps({
-                "achievements": achievements,
-                "stats": stats,
-                "progress": {
-                    "earned": earned_count,
-                    "total": total_achievements,
-                    "percentage": int((earned_count / total_achievements) * 100) if total_achievements > 0 else 0
-                }
-            }).encode("utf-8"))
-        else:
-            self.wfile.write(json.dumps({"error": "Not found"}).encode("utf-8"))
+        self.wfile.write(response_body)
 
     def do_POST(self):
         parsed = urllib.parse.urlparse(self.path)
