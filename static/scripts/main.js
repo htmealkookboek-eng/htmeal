@@ -248,12 +248,26 @@ async function apiFetch(url, options = {}) {
     init.body = JSON.stringify(options.body);
   }
 
-  try {
-    const response = await fetch(url, init);
-    return response;
-  } catch (error) {
-    console.error('apiFetch failed:', error, url, init);
-    throw error;
+  const method = String(init.method || 'GET').toUpperCase();
+  const canRetry = method === 'GET' || method === 'HEAD';
+  const retryDelays = [500, 1500];
+  let retryCount = 0;
+
+  while (true) {
+    try {
+      const response = await fetch(url, init);
+      if (!canRetry || ![502, 503, 504].includes(response.status) || retryCount >= retryDelays.length) {
+        return response;
+      }
+    } catch (error) {
+      if (!canRetry || error.name === 'AbortError' || retryCount >= retryDelays.length) {
+        console.error('apiFetch failed:', error, url, init);
+        throw error;
+      }
+    }
+
+    await new Promise(resolve => setTimeout(resolve, retryDelays[retryCount]));
+    retryCount += 1;
   }
 }
 window.getUserHeaders = getUserHeaders;
@@ -731,14 +745,17 @@ function renderLoadingState(message = 'Laden van recepten...') {
   recipeGrid.innerHTML = skeletons;
 }
 
-function renderErrorState(message) {
+function renderErrorState(message, onRetry = null) {
+  const retryButton = onRetry ? '<button type="button" class="btn btn-primary" data-error-retry>Opnieuw proberen</button>' : '';
   recipeGrid.innerHTML = `
     <div class="empty-state">
       <div class="empty-state-icon">🍳</div>
       <div class="empty-state-title">Oeps!</div>
       <p>${message}</p>
+      ${retryButton}
     </div>
   `;
+  if (onRetry) recipeGrid.querySelector('[data-error-retry]')?.addEventListener('click', onRetry, { once: true });
 }
 
 function debounce(fn, delay = 250) {
@@ -1016,7 +1033,7 @@ async function fetchFavorites() {
     viewTitle.innerHTML = `<span class="de-stijl-block ds-yellow" style="width:12px; height:12px; margin-right:12px;"></span>Mijn favorieten`;
   } catch (e) {
     console.error(e);
-    renderErrorState('Kon favorieten niet laden');
+    renderErrorState('Kon favorieten niet laden', () => fetchFavorites());
   }
 }
 
@@ -1461,7 +1478,7 @@ async function fetchRecipes(query = '') {
     saveLastRecipeQuery(query);
   } catch (e) {
     console.error('Kon recepten niet laden', e);
-    renderErrorState('Kon recepten niet laden. Controleer je verbinding of probeer opnieuw.');
+    renderErrorState('Kon recepten niet laden. Controleer je verbinding of probeer opnieuw.', () => fetchRecipes(AppState.lastRecipeQuery));
   }
 }
 
