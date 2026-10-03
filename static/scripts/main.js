@@ -3451,11 +3451,7 @@ function showAchievementUnlocked(achievement) {
 }
 
 restoreStoredSessionState();
-refreshAuthStatus().then((loggedIn) => {
-  if (!loggedIn) {
-    openLoginModal();
-  }
-});
+refreshAuthStatus();
 
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value;
