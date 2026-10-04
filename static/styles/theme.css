@@ -745,9 +745,6 @@ select:focus-visible,
   background: var(--color-paper-alt);
   border: 1px solid var(--color-border);
 }
-.recipe-card-image.recipe-image-fallback {
-  border-left: 4px solid var(--color-accent);
-}
 .recipe-image-fallback-mark {
   display: grid;
   place-items: center;
