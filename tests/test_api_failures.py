@@ -43,5 +43,47 @@ class ApiFailureResponseTests(unittest.TestCase):
         )
 
 
+class PasswordRecoveryTests(unittest.TestCase):
+    def test_public_invite_code_is_not_a_reset_token(self):
+        import app
+
+        user = {
+            'username': 'RecoveryUser',
+            'password': app.hash_password('old-password'),
+            'session_token': 'existing-session',
+            'csrf_token': 'existing-csrf',
+            'meta': {'invite_code': 'public-invite'},
+        }
+        old_hash = user['password']
+        with patch.object(app, 'PASSWORD_RESET_TOKEN', 'server-reset-token'), \
+             patch('app.get_user', return_value=user), patch('app.save_user') as save_user:
+            result = app.reset_user_password('RecoveryUser', 'public-invite', 'new-password')
+
+        self.assertIsNone(result)
+        self.assertEqual(user['password'], old_hash)
+        save_user.assert_not_called()
+
+    def test_valid_reset_token_changes_password_and_rotates_sessions(self):
+        import app
+
+        user = {
+            'username': 'RecoveryUser',
+            'password': app.hash_password('old-password'),
+            'session_token': 'existing-session',
+            'csrf_token': 'existing-csrf',
+            'meta': {},
+        }
+        with patch.object(app, 'PASSWORD_RESET_TOKEN', 'server-reset-token'), \
+             patch('app.get_user', return_value=user), patch('app.save_user') as save_user:
+            result = app.reset_user_password('RecoveryUser', 'server-reset-token', 'new-password')
+
+        self.assertEqual(result['username'], 'RecoveryUser')
+        self.assertTrue(app.verify_password('new-password', user['password']))
+        self.assertNotEqual(result['session_token'], 'existing-session')
+        self.assertEqual(user['session_token'], result['session_token'])
+        self.assertIsNone(user['csrf_token'])
+        save_user.assert_called_once_with(user)
+
+
 if __name__ == "__main__":
     unittest.main()

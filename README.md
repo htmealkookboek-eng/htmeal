@@ -19,6 +19,10 @@ A modular desktop-first cookbook application scaffold in Python.
 - The server now reads `PORT` from the environment, so it works correctly on Render
 - The legacy static GitHub Pages build script remains available as a `build:static` npm script
 
+## Password Recovery
+
+Email recovery is not configured. To enable password recovery, set `HTMEAL_PASSWORD_RESET_TOKEN` in the Render service environment to a randomly generated secret of at least 32 bytes. The admin shares this secret privately with the account holder; anyone who has it can reset any account. Never commit or post the secret. The reset form stays unavailable until this variable is set.
+
 ## Next steps
 
 - Add recipe data to `data/recipes.json`

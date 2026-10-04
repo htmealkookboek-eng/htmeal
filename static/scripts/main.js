@@ -404,14 +404,43 @@ function showAuthModalState() {
   const title = document.getElementById('login-modal-title');
   const submit = document.getElementById('btn-login-submit');
   const toggle = document.getElementById('btn-toggle-register');
+  const forgot = document.getElementById('btn-forgot-password');
+  const footerCopy = document.getElementById('login-footer-copy');
+  const inviteContainer = document.getElementById('register-invite-container');
+  const inviteLabel = document.getElementById('login-invite-label');
+  const resetTokenContainer = document.getElementById('password-reset-token-container');
+  const resetTokenInput = document.getElementById('login-reset-token');
+  const recoveryHelp = document.getElementById('password-recovery-help');
+  const knownUsersSection = document.getElementById('known-users-section');
+  const passwordLabel = document.getElementById('login-password-label');
+  const passwordInput = document.getElementById('login-password');
+  const inviteInput = document.getElementById('login-invite-code');
   if (loggedIn) {
     if (title) title.textContent = 'Account';
     if (submit) submit.textContent = 'Inloggen';
     if (toggle) toggle.style.display = 'none';
+    if (forgot) forgot.style.display = 'none';
   } else {
-    if (title) title.textContent = isRegisterMode ? 'Registreer' : 'Inloggen';
-    if (submit) submit.textContent = isRegisterMode ? 'Account aanmaken' : 'Inloggen';
-    if (toggle) toggle.style.display = 'inline';
+    if (title) title.textContent = isRecoveryMode ? 'Wachtwoord herstellen' : isRegisterMode ? 'Registreer' : 'Inloggen';
+    if (submit) submit.textContent = isRecoveryMode ? 'Wachtwoord herstellen' : isRegisterMode ? 'Account aanmaken' : 'Inloggen';
+    if (toggle) {
+      toggle.style.display = 'inline';
+      toggle.textContent = isRegisterMode || isRecoveryMode ? 'Terug naar inloggen' : 'Registreer hier';
+    }
+    if (forgot) forgot.style.display = isRecoveryMode || isRegisterMode ? 'none' : 'inline';
+    if (footerCopy) footerCopy.textContent = isRegisterMode ? 'Al een account?' : isRecoveryMode ? 'Toch je wachtwoord gevonden?' : 'Nog geen account?';
+    if (inviteContainer) inviteContainer.style.display = isRegisterMode ? 'flex' : 'none';
+    if (resetTokenContainer) resetTokenContainer.style.display = isRecoveryMode ? 'flex' : 'none';
+    if (inviteLabel) inviteLabel.textContent = 'Uitnodigingscode (Invite Code)';
+    if (recoveryHelp) recoveryHelp.style.display = isRecoveryMode ? 'block' : 'none';
+    if (knownUsersSection) knownUsersSection.style.display = isRegisterMode || isRecoveryMode ? 'none' : 'block';
+    if (passwordLabel) passwordLabel.textContent = isRecoveryMode ? 'Nieuw wachtwoord' : 'Wachtwoord';
+    if (passwordInput) {
+      passwordInput.autocomplete = isRecoveryMode ? 'new-password' : 'current-password';
+      passwordInput.placeholder = isRecoveryMode ? 'Nieuw wachtwoord' : 'Je wachtwoord';
+    }
+    if (inviteInput) inviteInput.required = isRegisterMode;
+    if (resetTokenInput) resetTokenInput.required = isRecoveryMode;
   }
 }
 
@@ -429,33 +458,29 @@ function closeLoginModal() {
   closeManagedModal(loginModal);
 }
 let isRegisterMode = false;
+let isRecoveryMode = false;
 if (loginCloseButton) {
   loginCloseButton.addEventListener('click', closeLoginModal);
 }
 const toggleRegisterBtn = document.getElementById('btn-toggle-register');
+const forgotPasswordButton = document.getElementById('btn-forgot-password');
 if (toggleRegisterBtn) {
   toggleRegisterBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    isRegisterMode = !isRegisterMode;
-    const title = document.getElementById('login-modal-title');
-    const submit = document.getElementById('btn-login-submit');
-    const toggle = document.getElementById('btn-toggle-register');
-    const known = document.getElementById('known-users-section');
-    if (isRegisterMode) {
-      title.textContent = 'Registreer';
-      submit.textContent = 'Account aanmaken';
-      toggle.textContent = 'Terug naar inloggen';
-      if (known) known.style.display = 'none';
-      const inviteContainer = document.getElementById('register-invite-container');
-      if (inviteContainer) inviteContainer.style.display = 'flex';
-    } else {
-      title.textContent = 'Inloggen';
-      submit.textContent = 'Inloggen';
-      toggle.textContent = 'Registreer hier';
-      if (known) known.style.display = 'block';
-      const inviteContainer = document.getElementById('register-invite-container');
-      if (inviteContainer) inviteContainer.style.display = 'none';
-    }
+    isRegisterMode = !(isRegisterMode || isRecoveryMode);
+    isRecoveryMode = false;
+    showAuthModalState();
+    const error = document.getElementById('login-error');
+    if (error) error.textContent = '';
+  });
+}
+if (forgotPasswordButton) {
+  forgotPasswordButton.addEventListener('click', () => {
+    isRegisterMode = false;
+    isRecoveryMode = true;
+    showAuthModalState();
+    const error = document.getElementById('login-error');
+    if (error) error.textContent = '';
   });
 }
 if (loginForm) {
@@ -464,6 +489,7 @@ if (loginForm) {
     const username = (loginUsernameInput ? loginUsernameInput.value.trim() : '').trim();
     const password = (document.getElementById('login-password') ? document.getElementById('login-password').value : '').trim();
     const inviteCode = (document.getElementById('login-invite-code') ? document.getElementById('login-invite-code').value : '').trim();
+    const resetToken = (document.getElementById('login-reset-token') ? document.getElementById('login-reset-token').value : '').trim();
     const error = document.getElementById('login-error');
     
     if (!username || !password) {
@@ -480,9 +506,10 @@ if (loginForm) {
         if (error) error.textContent = 'Wachtwoord moet ten minste 6 tekens bevatten.';
         return;
       }
-      const action = isRegisterMode ? 'register' : 'login';
+      const action = isRecoveryMode ? 'reset_password' : isRegisterMode ? 'register' : 'login';
       const bodyPayload = { username, password, action };
       if (isRegisterMode) bodyPayload.invite_code = inviteCode;
+      if (isRecoveryMode) bodyPayload.reset_token = resetToken;
       const res = await apiFetch('/api/auth', {
         method: 'POST',
         isJson: true,
@@ -496,6 +523,8 @@ if (loginForm) {
       }
       
       if (error) error.textContent = '';
+      isRegisterMode = false;
+      isRecoveryMode = false;
       const loggedInUser = (data && data.username) ? String(data.username).trim() : username;
       setCurrentUser(loggedInUser);
       saveStoredSessionToken(data && data.session_token ? String(data.session_token).trim() : '');

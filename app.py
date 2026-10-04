@@ -11,6 +11,7 @@ import logging
 import shutil
 from http.server import SimpleHTTPRequestHandler, HTTPServer, ThreadingHTTPServer
 import hashlib
+import hmac
 import uuid
 from datetime import datetime
 
@@ -58,6 +59,7 @@ ALLOWED_IMAGE_PREFIXES = (
 )
 ALLOWED_ORIGIN = os.environ.get("HTMEAL_ALLOWED_ORIGIN")
 ADMIN_TOKEN = os.environ.get("HTMEAL_ADMIN_TOKEN")
+PASSWORD_RESET_TOKEN = os.environ.get("HTMEAL_PASSWORD_RESET_TOKEN", "").strip()
 CSRF_HEADER = "X-CSRF-Token"
 
 RATE_LIMITS = {}
@@ -89,6 +91,23 @@ def hash_password(password):
 
 def verify_password(password, hashed):
     return hash_password(password) == hashed
+
+
+def reset_user_password(username, reset_token, new_password):
+    provided_token = str(reset_token or '').strip()
+    if not PASSWORD_RESET_TOKEN or not provided_token or not hmac.compare_digest(PASSWORD_RESET_TOKEN, provided_token):
+        return None
+
+    user = get_user(username)
+    if not user or len(str(new_password or '').strip()) < 6:
+        return None
+
+    token = uuid.uuid4().hex
+    user['password'] = hash_password(new_password)
+    user['session_token'] = token
+    user['csrf_token'] = None
+    save_user(user)
+    return {'username': user['username'], 'session_token': token}
 
 
 def normalize_username(username):
@@ -372,6 +391,19 @@ class CookbookHandler(SimpleHTTPRequestHandler):
             action = body.get('action') or 'login'
             if not username or not password:
                 send_json(400, {'error': 'Username and password required'})
+                return
+            if action == 'reset_password':
+                if len(password) < 6:
+                    send_json(400, {'error': 'Nieuw wachtwoord moet ten minste 6 tekens bevatten.'})
+                    return
+                if not PASSWORD_RESET_TOKEN:
+                    send_json(503, {'error': 'Wachtwoordherstel is nog niet ingesteld. Neem contact op met beheer.'})
+                    return
+                recovery = reset_user_password(username, body.get('reset_token'), password)
+                if not recovery:
+                    send_json(400, {'error': 'Herstel niet gelukt. Controleer je gebruikersnaam en herstelcode.'})
+                    return
+                send_json(200, {'status': 'password_reset', **recovery}, set_cookie=recovery['session_token'])
                 return
             existing_user = get_user(username)
             if action == 'register':
