@@ -572,6 +572,51 @@ function getDisplayRecipeDescription(value) {
     .trim();
 }
 
+function createRecipeImageFallback(title, label, className = '') {
+  const fallback = document.createElement('div');
+  fallback.className = `recipe-image-fallback ${className}`.trim();
+  fallback.setAttribute('role', 'img');
+  fallback.setAttribute('aria-label', `${label}: ${title || 'recept'}`);
+
+  const mark = document.createElement('span');
+  mark.className = 'recipe-image-fallback-mark';
+  mark.setAttribute('aria-hidden', 'true');
+  mark.textContent = 'HT';
+
+  const titleElement = document.createElement('strong');
+  titleElement.className = 'recipe-image-fallback-title';
+  titleElement.textContent = title || 'Ongetiteld';
+
+  const labelElement = document.createElement('span');
+  labelElement.className = 'recipe-image-fallback-label';
+  labelElement.textContent = label;
+
+  fallback.append(mark, titleElement, labelElement);
+  return fallback;
+}
+
+function setRecipeImageSource(image, source, title, altText = '') {
+  if (!image || !source) return;
+  image.alt = altText || `Afbeelding van ${title || 'recept'}`;
+  image.loading = 'lazy';
+  image.addEventListener('error', () => {
+    const cardFrame = image.closest('.recipe-card-image');
+    const heroFrame = image.closest('.hero-image-card');
+    if (cardFrame) {
+      cardFrame.replaceWith(createRecipeImageFallback(title, 'Foto niet beschikbaar', 'recipe-card-image'));
+      return;
+    }
+    if (heroFrame) {
+      heroFrame.classList.add('hero-image-card--fallback');
+      heroFrame.querySelector('.hero-image-overlay')?.remove();
+      image.replaceWith(createRecipeImageFallback(title, 'Foto niet beschikbaar', 'hero-image-fallback'));
+      return;
+    }
+    image.replaceWith(createRecipeImageFallback(title, 'Foto niet beschikbaar', 'recipe-gallery-image-fallback'));
+  }, { once: true });
+  image.src = source;
+}
+
 async function parseJsonResponse(response, fallback = {}) {
   const text = await response.text();
   if (!text) return fallback;
@@ -1307,7 +1352,7 @@ async function renderHeroSection(recipes) {
     const imageCard = document.createElement('div');
     imageCard.className = 'hero-image-card hero-image-card--compact';
     imageCard.innerHTML = `
-      <img src="${heroImage}" alt="${heroImageAlt}">
+      <img alt="">
       <div class="hero-image-overlay"><span>${heroRecipe.title}</span></div>
     `;
     imageCard.onclick = () => openRecipeView(heroRecipe);
@@ -1334,6 +1379,7 @@ async function renderHeroSection(recipes) {
 
     heroSection.appendChild(featured);
     heroSection.appendChild(imageCard);
+    setRecipeImageSource(imageCard.querySelector('img'), heroImage, heroRecipe.title, heroImageAlt);
     heroSection.appendChild(seasonalCard);
     seasonalCard.querySelectorAll('.seasonal-veg-item').forEach(button => {
       button.addEventListener('click', () => {
@@ -1377,13 +1423,14 @@ async function renderHeroSection(recipes) {
     const imageCard = document.createElement('div');
     imageCard.className = 'hero-image-card';
     imageCard.innerHTML = `
-      <img src="${escapeHtml(nieuwHeroImage)}" alt="Nieuw recept">
+      <img alt="">
       <div class="hero-image-overlay"><span>${escapeHtml(newestRecipe.title)}</span></div>
     `;
     imageCard.onclick = () => openRecipeView(newestRecipe);
 
     heroSection.appendChild(card);
     heroSection.appendChild(imageCard);
+    setRecipeImageSource(imageCard.querySelector('img'), nieuwHeroImage, newestRecipe.title, 'Nieuw recept');
   } else {
     const card = document.createElement('div');
     card.className = 'hero-card';
@@ -1405,13 +1452,14 @@ async function renderHeroSection(recipes) {
     const imageCard = document.createElement('div');
     imageCard.className = 'hero-image-card';
     imageCard.innerHTML = `
-      <img src="${escapeHtml(heroImage)}" alt="${escapeHtml(heroImageAlt)}">
+      <img alt="">
       <div class="hero-image-overlay"><span>${escapeHtml(heroRecipe.title || 'Ongetiteld')}</span></div>
     `;
     imageCard.onclick = () => openRecipeView(heroRecipe);
 
     heroSection.appendChild(card);
     heroSection.appendChild(imageCard);
+    setRecipeImageSource(imageCard.querySelector('img'), heroImage, heroRecipe.title, heroImageAlt);
 
     const seasonalCard = document.createElement('div');
     seasonalCard.className = 'hero-card hero-seasonal-card';
@@ -1748,10 +1796,6 @@ function renderRecipeCard(recipe, index) {
   const tags = tagsList.slice(0, 3).map(t => `<span class="tag clickable" onclick='onCollectionTagClick(event, ${JSON.stringify(t)})'>${t}</span>`).join('');
   
   const primaryImage = getPrimaryRecipeImage(recipe);
-  let imgHtml = '';
-  if (primaryImage) {
-      imgHtml = `<div class="recipe-card-image"><img src="${primaryImage}" loading="lazy" alt="Afbeelding van het recept ${escapeHtml(recipe.title)}"></div>`;
-  }
   const notePreview = getRecipeNotePreview(recipe);
   const noteHtml = notePreview ? `<div class="recipe-card-note">${escapeHtml(notePreview)}</div>` : '';
   
@@ -1771,7 +1815,6 @@ function renderRecipeCard(recipe, index) {
   }
   
   card.innerHTML = `
-    ${imgHtml}
     <h3 class="recipe-card-title">${escapeHtml(recipe.title || 'Ongetiteld')}</h3>
     <p class="meta-text" style="color: var(--color-text); text-transform:none; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${escapeHtml(getDisplayRecipeDescription(recipe.description) || 'Geen beschrijving beschikbaar.')}</p>
     ${stickersHtml}
@@ -1782,6 +1825,16 @@ function renderRecipeCard(recipe, index) {
     </div>
     <div class="recipe-card-meta" style="margin-top:auto;">${tags}</div>
   `;
+  if (primaryImage) {
+    const frame = document.createElement('div');
+    frame.className = 'recipe-card-image';
+    const image = document.createElement('img');
+    frame.appendChild(image);
+    card.prepend(frame);
+    setRecipeImageSource(image, primaryImage, recipe.title);
+  } else {
+    card.prepend(createRecipeImageFallback(recipe.title, 'Geen foto toegevoegd', 'recipe-card-image'));
+  }
   return card;
 }
 
@@ -2094,12 +2147,18 @@ function renderRecipeGallery(recipe, gallery) {
   currentGalleryImages.forEach((src, index) => {
       const item = document.createElement('div');
       item.className = 'recipe-gallery-item';
-      item.innerHTML = `<img src="${escapeHtml(src)}" loading="lazy" alt="Foto ${index + 1} van ${escapeHtml(recipe.title)}">`;
-      item.addEventListener('click', () => openImageLightbox(index));
+      item.innerHTML = `<img data-gallery-index="${index}" alt="">`;
+      item.addEventListener('click', () => {
+        if (!item.querySelector('.recipe-image-fallback')) openImageLightbox(index);
+      });
       track.appendChild(item);
     });
   gallery.innerHTML = '';
   gallery.appendChild(track);
+  track.querySelectorAll('img[data-gallery-index]').forEach(image => {
+    const index = Number(image.dataset.galleryIndex);
+    setRecipeImageSource(image, currentGalleryImages[index], recipe.title, `Foto ${index + 1} van ${recipe.title || 'recept'}`);
+  });
 
   // Removed scroll-snap fallback to enforce reliable transform-based sliding
   // and prevent native scroll interfering with <> buttons.
