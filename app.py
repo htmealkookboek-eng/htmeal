@@ -1,4 +1,9 @@
 #htmealkookboek@gmail.com github & Render & Supabase
+#Set-Location "C:\Python projectjes\Kookboek"
+#gh auth login --hostname github.com --git-protocol https --web
+#gh auth setup-git
+#git push origin main
+
 import pathlib
 import json
 import threading

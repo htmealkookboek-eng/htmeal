@@ -78,6 +78,7 @@ let currentGalleryImages = [];
 let galleryStartX = null;
 let screenWakeLock = null;
 let vegetableSpotlight = null;
+let currentHeroFeatures = null;
 
 const RECIPES_QUERY_CACHE_KEY = 'htmeal_last_recipe_query';
 const RECIPE_CACHE_SIZE_LIMIT = 20;
@@ -1354,6 +1355,17 @@ async function renderHeroSection(recipes) {
   heroSection.innerHTML = '';
   if(!heroRecipe) return;
 
+  const featureDetails = document.createElement('details');
+  featureDetails.className = 'hero-feature-details';
+  featureDetails.open = true;
+  const featureSummary = document.createElement('summary');
+  featureSummary.className = 'hero-feature-summary';
+  featureSummary.textContent = 'Ontdek meer';
+  const featureGrid = document.createElement('div');
+  featureGrid.className = 'hero-feature-grid';
+  featureDetails.append(featureSummary, featureGrid);
+  currentHeroFeatures = featureDetails;
+
   const previewCard = document.createElement('div');
   previewCard.className = 'hero-card';
   previewCard.innerHTML = `
@@ -1364,7 +1376,7 @@ async function renderHeroSection(recipes) {
       <div class="hero-collection-tags">${sortedTopTags.map(([tag, count]) => `<button type="button" class="btn btn-secondary collection-preview-tag" data-tag="${tag}">${tag} (${count})</button>`).join('')}</div>
     </div>
   `;
-  heroSection.appendChild(previewCard);
+  featureGrid.appendChild(previewCard);
 
   if(hasFeaturedCollection) {
     const featured = document.createElement('div');
@@ -1412,10 +1424,10 @@ async function renderHeroSection(recipes) {
       </div>
     `;
 
-    heroSection.appendChild(featured);
-    heroSection.appendChild(imageCard);
+    featureGrid.appendChild(featured);
+    featureGrid.appendChild(imageCard);
     setRecipeImageSource(imageCard.querySelector('img'), heroImage, heroRecipe.title, heroImageAlt);
-    heroSection.appendChild(seasonalCard);
+    featureGrid.appendChild(seasonalCard);
     seasonalCard.querySelectorAll('.seasonal-veg-item').forEach(button => {
       button.addEventListener('click', () => {
         const veg = button.dataset.vegetable;
@@ -1463,8 +1475,8 @@ async function renderHeroSection(recipes) {
     `;
     imageCard.onclick = () => openRecipeView(newestRecipe);
 
-    heroSection.appendChild(card);
-    heroSection.appendChild(imageCard);
+    featureGrid.appendChild(card);
+    featureGrid.appendChild(imageCard);
     setRecipeImageSource(imageCard.querySelector('img'), nieuwHeroImage, newestRecipe.title, 'Nieuw recept');
   } else {
     const card = document.createElement('div');
@@ -1492,8 +1504,8 @@ async function renderHeroSection(recipes) {
     `;
     imageCard.onclick = () => openRecipeView(heroRecipe);
 
-    heroSection.appendChild(card);
-    heroSection.appendChild(imageCard);
+    featureGrid.appendChild(card);
+    featureGrid.appendChild(imageCard);
     setRecipeImageSource(imageCard.querySelector('img'), heroImage, heroRecipe.title, heroImageAlt);
 
     const seasonalCard = document.createElement('div');
@@ -1514,7 +1526,7 @@ async function renderHeroSection(recipes) {
         </div>
       </div>
     `;
-    heroSection.appendChild(seasonalCard);
+    featureGrid.appendChild(seasonalCard);
     seasonalCard.querySelectorAll('.seasonal-veg-item').forEach(button => {
       button.addEventListener('click', () => {
         const veg = button.dataset.vegetable;
@@ -1525,7 +1537,8 @@ async function renderHeroSection(recipes) {
       });
     });
   }
-  heroSection.querySelectorAll('.collection-preview-tag').forEach(btn => {
+  heroSection.appendChild(featureDetails);
+  featureGrid.querySelectorAll('.collection-preview-tag').forEach(btn => {
     btn.addEventListener('click', () => {
       const tag = btn.dataset.tag;
       searchInput.value = tag;
@@ -1607,7 +1620,7 @@ function closeMobileSidebar() {
 }
 
 function openMobileSidebar() {
-  if (!sidebar || window.innerWidth > 980) return;
+  if (!sidebar || window.innerWidth > 1199) return;
   sidebar.classList.add('open');
   const backdrop = document.getElementById('sidebar-backdrop');
   if (backdrop) {
@@ -1861,7 +1874,9 @@ function renderRecipeCard(recipe, index) {
     stickersHtml = `<div class="recipe-card-stickers" style="margin-bottom: 8px;">${stickerList}</div>`;
   }
   
-  card.innerHTML = `
+  const cardBody = document.createElement('div');
+  cardBody.className = 'recipe-card-body';
+  cardBody.innerHTML = `
     <h3 class="recipe-card-title">${escapeHtml(recipe.title || 'Ongetiteld')}</h3>
     <p class="meta-text" style="color: var(--color-text); text-transform:none; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${escapeHtml(getDisplayRecipeDescription(recipe.description) || 'Geen beschrijving beschikbaar.')}</p>
     ${stickersHtml}
@@ -1872,6 +1887,7 @@ function renderRecipeCard(recipe, index) {
     </div>
     <div class="recipe-card-meta" style="margin-top:auto;">${tags}</div>
   `;
+  card.appendChild(cardBody);
   if (primaryImage) {
     const frame = document.createElement('div');
     frame.className = 'recipe-card-image';
@@ -2685,14 +2701,14 @@ if (sidebarClose) {
 }
 
 window.addEventListener('resize', () => {
-  if (window.innerWidth > 980) closeMobileSidebar();
+  if (window.innerWidth > 1199) closeMobileSidebar();
 });
 
 if (sidebar) {
   sidebar.addEventListener('click', (event) => {
     const target = event.target;
     const actionable = target.closest('.nav-item, #btn-open-import, .brand');
-    if (actionable && window.innerWidth <= 980) {
+    if (actionable && window.innerWidth <= 1199) {
       closeMobileSidebar();
     }
   });
