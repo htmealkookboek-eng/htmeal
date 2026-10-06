@@ -93,7 +93,8 @@ const AppState = {
   currentUser: '',
   apiCache: { recipesByQuery: {}, collections: null },
   lastRecipeQuery: '',
-  searchDebounceTimer: null
+  searchDebounceTimer: null,
+  recipeQueryRequestId: 0
 };
 
 function clearRecipeCaches() {
@@ -860,6 +861,11 @@ function debounce(fn, delay = 250) {
   AppState.searchDebounceTimer = setTimeout(fn, delay);
 }
 
+function cancelPendingRecipeSearch() {
+  clearTimeout(AppState.searchDebounceTimer);
+  AppState.searchDebounceTimer = null;
+}
+
 const TAG_ALIASES = {
   'zonder vlees/vis': 'vegetarisch',
   'zonder vlees en vis': 'vegetarisch',
@@ -1527,7 +1533,11 @@ async function renderHeroSection(recipes) {
     });
   });}
 
-async function fetchRecipes(query = '') {
+async function fetchRecipes(query = '', requestId = null) {
+  cancelPendingRecipeSearch();
+  if (requestId === null) requestId = ++AppState.recipeQueryRequestId;
+  if (requestId !== AppState.recipeQueryRequestId) return;
+
   const normalized = normalizeQuery(query);
   AppState.lastRecipeQuery = query;
   renderLoadingState();
@@ -1553,6 +1563,7 @@ async function fetchRecipes(query = '') {
     const res = await apiFetch(`/api/recipes?q=${encodeURIComponent(query)}`);
     if (!res.ok) throw new Error('Kan recepten niet laden');
     const recipes = await res.json();
+    if (requestId !== AppState.recipeQueryRequestId) return;
     AppState.apiCache.recipesByQuery[normalized] = recipes;
     const existingIndex = recipeCacheOrder.indexOf(normalized);
     if (existingIndex >= 0) recipeCacheOrder.splice(existingIndex, 1);
@@ -1578,31 +1589,38 @@ async function fetchRecipes(query = '') {
     viewTitle.innerHTML = `<span class="de-stijl-block ${blockColor}" style="width:12px; height:12px; margin-right:12px;"></span>${escapeHtml(titleText)}`;
     saveLastRecipeQuery(query);
   } catch (e) {
+    if (requestId !== AppState.recipeQueryRequestId) return;
     console.error('Kon recepten niet laden', e);
     renderErrorState('Kon recepten niet laden. Controleer je verbinding of probeer opnieuw.', () => fetchRecipes(AppState.lastRecipeQuery));
   }
 }
 
 function closeMobileSidebar() {
-  if (window.innerWidth <= 980 && sidebar) {
-    sidebar.classList.remove('open');
-    const backdrop = document.getElementById('sidebar-backdrop');
-    if (backdrop) backdrop.classList.remove('active');
-    if (sidebarToggle) sidebarToggle.setAttribute('aria-expanded', 'false');
+  if (!sidebar) return;
+  sidebar.classList.remove('open');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (backdrop) {
+    backdrop.classList.remove('active');
+    backdrop.setAttribute('aria-hidden', 'true');
   }
+  if (sidebarToggle) sidebarToggle.setAttribute('aria-expanded', 'false');
 }
 
 function openMobileSidebar() {
-  if (sidebar) {
-    sidebar.classList.add('open');
-    const backdrop = document.getElementById('sidebar-backdrop');
-    if (backdrop) backdrop.classList.add('active');
-    if (sidebarToggle) sidebarToggle.setAttribute('aria-expanded', 'true');
+  if (!sidebar || window.innerWidth > 980) return;
+  sidebar.classList.add('open');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (backdrop) {
+    backdrop.classList.add('active');
+    backdrop.setAttribute('aria-hidden', 'false');
   }
+  if (sidebarToggle) sidebarToggle.setAttribute('aria-expanded', 'true');
 }
 
 function clearSearchAndGoHome() {
   searchInput.value = '';
+  AppState.lastRecipeQuery = '';
+  saveLastRecipeQuery('');
   fetchRecipes('');
   closeMobileSidebar();
 }
@@ -2666,6 +2684,10 @@ if (sidebarClose) {
   sidebarClose.addEventListener('click', closeMobileSidebar);
 }
 
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 980) closeMobileSidebar();
+});
+
 if (sidebar) {
   sidebar.addEventListener('click', (event) => {
     const target = event.target;
@@ -2973,21 +2995,23 @@ document.getElementById('btn-open-import').onclick = () => {
   openManagedModal(editorModal);
 };
 document.getElementById('btn-close-editor').onclick = () => {
+  closeManagedModal(editorModal);
 };
 
 const btnNieuw = document.getElementById('nav-nieuw');
 if (btnNieuw) {
   btnNieuw.addEventListener('click', async () => {
-    if (window.innerWidth <= 768) {
-      document.getElementById('sidebar').classList.remove('open');
-      document.getElementById('sidebar-backdrop').classList.remove('active');
-    }
+    closeMobileSidebar();
+    cancelPendingRecipeSearch();
+    const requestId = ++AppState.recipeQueryRequestId;
     document.getElementById('hero-section').style.display = 'none';
     viewTitle.textContent = 'Nieuw (Recent toegevoegd of gewijzigd)';
     searchInput.value = '';
     AppState.lastRecipeQuery = '';
+    saveLastRecipeQuery('');
     
     const recipes = await fetchCollections();
+    if (requestId !== AppState.recipeQueryRequestId) return;
     const newest = getNewestRecipes(recipes);
     renderRecipes(newest);
   });
@@ -3543,7 +3567,8 @@ refreshAuthStatus();
 
 searchInput.addEventListener('input', (e) => {
   const query = e.target.value;
-  debounce(() => fetchRecipes(query), 200);
+  const requestId = ++AppState.recipeQueryRequestId;
+  debounce(() => fetchRecipes(query, requestId), 200);
 });
 
 document.addEventListener('keydown', (e) => {
@@ -3564,6 +3589,10 @@ document.addEventListener('keydown', (e) => {
     }
   }
   if(e.key === 'Escape') {
+    if (sidebar?.classList.contains('open')) {
+      closeMobileSidebar();
+      return;
+    }
     if (cookingMode.classList.contains('active') && cookingTimerInterval) {
       closeManagedModal(cookingMode);
       return;

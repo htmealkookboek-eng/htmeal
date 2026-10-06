@@ -696,8 +696,8 @@ select:focus-visible,
 .recipe-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--space-6);
-  align-items: start;
+  gap: var(--space-4);
+  align-items: stretch;
 }
 
 /* Recipe Card - Clean Scandinavian */
@@ -911,6 +911,20 @@ select:focus-visible,
 }
 
 @media (max-width: 980px) {
+  #view-title {
+    font-size: 1.75rem;
+    line-height: 1.2;
+    letter-spacing: 0;
+    margin-bottom: 20px;
+  }
+  .content-scroll {
+    order: 1;
+    flex: 0 0 auto;
+    overflow: visible;
+  }
+  .hero-section {
+    order: 2;
+  }
   .app-container {
     flex-direction: column;
   }
@@ -958,6 +972,38 @@ select:focus-visible,
 }
 
 @media (max-width: 700px) {
+  .hero-section {
+    padding: 12px;
+    gap: 12px;
+  }
+  .hero-card {
+    min-height: 0;
+    padding: 14px;
+  }
+  .hero-image-card,
+  .hero-image-card--tall {
+    min-height: 220px;
+  }
+  .hero-image-card img {
+    min-height: 220px;
+  }
+  .hero-collection-tags {
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .hero-collection-tags .collection-preview-tag {
+    padding: 6px 9px;
+    font-size: 0.7rem;
+  }
+  .seasonal-veg-image {
+    min-height: 90px;
+  }
+  .recipe-grid {
+    gap: var(--space-3);
+  }
+  .recipe-card {
+    padding: var(--space-3);
+  }
   .sidebar {
     padding: var(--space-3);
   }
@@ -989,7 +1035,9 @@ select:focus-visible,
     box-shadow: inset 0 0 0 1px rgba(34,80,149,0.04);
   }
   #view-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    margin-bottom: 16px;
   }
   .hero-card h3 {
     font-size: 1.4rem;
@@ -1013,12 +1061,32 @@ select:focus-visible,
     width: 100%;
   }
   .top-bar {
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+  }
+  .sidebar-toggle {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    width: 44px;
+    min-width: 44px;
+    margin-right: 0;
+    padding: 0;
   }
   .top-bar-user-actions {
+    grid-column: 1 / -1;
+    grid-row: 2;
     width: 100%;
     justify-content: space-between;
+  }
+  #current-user-badge {
+    min-width: 0;
+    max-width: 58%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .content-scroll {
     padding: var(--space-3);
